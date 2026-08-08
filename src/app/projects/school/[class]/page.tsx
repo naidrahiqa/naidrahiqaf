@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { CLASS_LEVELS, slugify } from "@/lib/utils";
-import { ProjectCard } from "@/components/cards";
+import { SubjectRow } from "@/components/cards";
 import type { Project } from "@/lib/types";
 
 export const metadata: Metadata = {
@@ -75,23 +75,15 @@ export default async function SchoolClassPage({
         </p>
       </header>
 
-      <div className="flex flex-col gap-12">
+      <div className="flex flex-col gap-3">
         {groups.map((g) => (
-          <section key={slugify(g.name)} className="flex flex-col gap-4">
-            <div>
-              <p className="text-xs uppercase tracking-wider text-accent">
-                mapel
-              </p>
-              <h2 className="mt-1 text-xl font-bold tracking-tight">
-                {g.name}
-              </h2>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {g.items.map((p) => (
-                <ProjectCard key={p.id} project={p} />
-              ))}
-            </div>
-          </section>
+          <SubjectRow
+            key={slugify(g.name)}
+            cls={cls}
+            subject={g.name}
+            slug={slugify(g.name)}
+            itemCount={g.items.length}
+          />
         ))}
       </div>
     </div>
