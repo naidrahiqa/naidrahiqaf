@@ -31,7 +31,7 @@ export default async function AboutPage() {
           {profile.profile_image ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={profile.profile_image}
+              src={profile.profile_image.startsWith("http") ? profile.profile_image : `https://kcensjxxnvoyacepzbqs.supabase.co/storage/v1/object/public/${profile.profile_image}`}
               alt={profile.name}
               className="h-16 w-16 rounded-full object-cover ring-2 ring-accent/20 ring-offset-2 ring-offset-background"
             />
