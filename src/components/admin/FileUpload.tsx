@@ -6,9 +6,23 @@ import { createClient } from "@/lib/supabase/client";
 
 function convertGoogleDriveUrl(url: string): string {
   const match = url.match(/drive\.google\.com\/file\/d\/([^/]+)\//);
-  if (match) return `https://lh3.googleusercontent.com/d/${match[1]}`;
+  if (match) return `https://lh3.googleusercontent.com/d/${match[1]}=s0`;
   const match2 = url.match(/[?&]id=([^&]+)/);
-  if (match2 && url.includes("drive.google.com")) return `https://lh3.googleusercontent.com/d/${match2[1]}`;
+  if (match2 && url.includes("drive.google.com")) return `https://lh3.googleusercontent.com/d/${match2[1]}=s0`;
+  return url;
+}
+
+function getGoogleDriveFileId(url: string): string | null {
+  const match = url.match(/drive\.google\.com\/file\/d\/([^/]+)\//);
+  if (match) return match[1];
+  const match2 = url.match(/[?&]id=([^&]+)/);
+  if (match2 && url.includes("drive.google.com")) return match2[1];
+  return null;
+}
+
+function getGoogleDriveViewUrl(url: string): string {
+  const id = getGoogleDriveFileId(url);
+  if (id) return `https://drive.google.com/file/d/${id}/view`;
   return url;
 }
 

@@ -33,6 +33,11 @@ function isImageUrl(url: string): boolean {
   return false;
 }
 
+function getViewUrl(certificateUrl: string, directUrl: string): string {
+  if (certificateUrl.includes("drive.google.com")) return certificateUrl;
+  return directUrl;
+}
+
 function getSupabaseUrl(path: string): string {
   const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
   return `${base}/storage/v1/object/public/${path}`;
@@ -47,19 +52,22 @@ export function AchievementFilter({ items }: { items: Achievement[] }) {
   function renderThumbnail(a: Achievement) {
     if (!a.certificate_url) return null;
     
-    const url = isLocalPath(a.certificate_url) 
+    const directUrl = isLocalPath(a.certificate_url) 
       ? getSupabaseUrl(a.certificate_url) 
-      : a.certificate_url;
+      : a.certificate_url.includes("lh3.googleusercontent.com/d/")
+        ? a.certificate_url
+        : a.certificate_url;
+    const viewUrl = getViewUrl(a.certificate_url, directUrl);
 
     if (isPdfUrl(a.certificate_url)) {
       return (
         <a
-          href={url}
+          href={viewUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="block aspect-[4/3] overflow-hidden border-b-2 border-foreground bg-surface-2"
+          className="block aspect-[3/2] overflow-hidden border-b-2 border-foreground bg-surface-2"
         >
-          <PDFThumbnail url={url} className="h-full w-full" />
+          <PDFThumbnail url={directUrl} className="h-full w-full" />
         </a>
       );
     }
@@ -67,14 +75,14 @@ export function AchievementFilter({ items }: { items: Achievement[] }) {
     if (isImageUrl(a.certificate_url)) {
       return (
         <a
-          href={url}
+          href={viewUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="block aspect-[4/3] overflow-hidden border-b-2 border-foreground bg-surface-2"
+          className="block aspect-[3/2] overflow-hidden border-b-2 border-foreground bg-surface-2"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={url}
+            src={directUrl}
             alt={a.title}
             className="h-full w-full object-cover"
           />
@@ -82,13 +90,12 @@ export function AchievementFilter({ items }: { items: Achievement[] }) {
       );
     }
 
-    // Unknown file type or Google Drive file
     return (
       <a
-        href={url}
+        href={viewUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex aspect-[4/3] items-center justify-center gap-2 border-b-2 border-foreground bg-surface-2 text-muted transition-colors hover:text-accent"
+        className="flex aspect-[3/2] items-center justify-center gap-2 border-b-2 border-foreground bg-surface-2 text-muted transition-colors hover:text-accent"
       >
         <FileText size={24} />
         <span className="text-xs font-bold uppercase">View Certificate</span>
@@ -154,7 +161,7 @@ export function AchievementFilter({ items }: { items: Achievement[] }) {
               )}
               {a.certificate_url && (
                 <a
-                  href={isLocalPath(a.certificate_url) ? getSupabaseUrl(a.certificate_url) : a.certificate_url}
+                  href={getViewUrl(a.certificate_url, isLocalPath(a.certificate_url) ? getSupabaseUrl(a.certificate_url) : a.certificate_url)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-1 inline-flex w-fit items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-accent transition-colors hover:underline"
