@@ -17,15 +17,16 @@ import {
 import { FileUpload } from "@/components/admin/FileUpload";
 import { VideoFields } from "@/components/admin/VideoFields";
 import { MediaGallery, type MediaDraft } from "@/components/admin/MediaGallery";
+import { LayoutPreview } from "@/components/admin/LayoutPreview";
 
 const classLevels = ["", "x", "xi", "xii"];
 
-const layoutOptions: { value: ProjectLayout; label: string; hint: string }[] = [
-  { value: "video-focus", label: "video focus", hint: "video besar di atas, lalu gallery & teks" },
-  { value: "gallery-first", label: "gallery first", hint: "grid media besar, teks di bawah" },
-  { value: "text-first", label: "text first", hint: "konten markdown dulu, gallery di bawah" },
-  { value: "cover-hero", label: "cover hero", hint: "gambar sampul penuh di hero" },
-  { value: "masonry", label: "masonry", hint: "kolom foto bebas tinggi, teks minimal" },
+const layoutOptions: { value: ProjectLayout; label: string }[] = [
+  { value: "video-focus", label: "video focus" },
+  { value: "gallery-first", label: "gallery first" },
+  { value: "text-first", label: "text first" },
+  { value: "cover-hero", label: "cover hero" },
+  { value: "masonry", label: "masonry" },
 ];
 
 export function ProjectForm({ initial }: { initial?: Project | null }) {
@@ -180,9 +181,9 @@ export function ProjectForm({ initial }: { initial?: Project | null }) {
                 <option key={l.value} value={l.value}>{l.label}</option>
               ))}
             </Select>
-            <p className="mt-1.5 font-mono text-[11px] text-muted">
-              {layoutOptions.find((l) => l.value === layout)?.hint}
-            </p>
+            <div className="mt-2">
+              <LayoutPreview value={layout} />
+            </div>
           </div>
           <div>
             <Label htmlFor="category">category</Label>

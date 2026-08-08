@@ -3,6 +3,7 @@ import { Plus, Star } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 import { DeleteButton } from "@/components/admin/DeleteButton";
+import { FeaturedToggle } from "@/components/admin/FeaturedToggle";
 import { StatusPill } from "@/components/admin/ui";
 
 export default async function AdminProjectsPage({
@@ -135,6 +136,7 @@ export default async function AdminProjectsPage({
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex justify-end gap-2">
+                    <FeaturedToggle id={project.id} featured={project.featured} />
                     <Link
                       href={`/admin/projects/${project.id}`}
                       className="rounded-md border border-border bg-surface-2 px-2.5 py-1.5 text-xs font-semibold text-muted transition-colors hover:border-accent/50 hover:text-accent"
@@ -197,6 +199,7 @@ export default async function AdminProjectsPage({
               )}
             </div>
             <div className="flex gap-2">
+              <FeaturedToggle id={project.id} featured={project.featured} />
               <Link
                 href={`/admin/projects/${project.id}`}
                 className="rounded-md border border-border bg-surface-2 px-2.5 py-1.5 text-xs font-semibold text-muted transition-colors hover:border-accent/50 hover:text-accent"
