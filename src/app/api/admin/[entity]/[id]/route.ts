@@ -46,10 +46,11 @@ export async function PUT(
   delete payload.id;
   delete payload.created_at;
   payload.updated_at = new Date().toISOString();
-  if (payload.title) payload.slug = payload.slug ?? slugify(String(payload.title));
-  if (payload.video_url !== undefined)
-    payload.video_type = payload.video_type ?? detectVideoType(String(payload.video_url ?? null));
-
+  if (entity !== "achievements") {
+    if (payload.title) payload.slug = payload.slug ?? slugify(String(payload.title));
+    if (payload.video_url !== undefined)
+      payload.video_type = payload.video_type ?? detectVideoType(String(payload.video_url ?? null));
+  }
   const supabase = await createClient();
   const { data, error } = await supabase
     .from(entity)

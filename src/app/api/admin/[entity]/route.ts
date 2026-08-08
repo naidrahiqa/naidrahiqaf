@@ -53,9 +53,11 @@ export async function POST(
   }
 
   const payload: Record<string, unknown> = { ...body };
-  payload.slug = body.slug?.trim() || slugify(body.title);
-  payload.video_type =
-    body.video_type ?? detectVideoType(body.video_url ?? null);
+  if (entity !== "achievements") {
+    payload.slug = body.slug?.trim() || slugify(body.title);
+    payload.video_type =
+      body.video_type ?? detectVideoType(body.video_url ?? null);
+  }
 
   const supabase = await createClient();
   const { data, error } = await supabase

@@ -16,6 +16,12 @@ function isImageUrl(url: string): boolean {
   return /\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i.test(url) || url.includes("drive.google.com/uc?export=view");
 }
 
+function getPreviewUrl(value: string): string {
+  if (value.startsWith("http")) return value;
+  const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  return `${base}/storage/v1/object/public/${value}`;
+}
+
 export function FileUpload({
   label,
   value,
@@ -128,7 +134,7 @@ export function FileUpload({
         <div className="mt-2 flex items-center gap-2">
           {isImageUrl(value) ? (
             <img
-              src={value}
+              src={getPreviewUrl(value)}
               alt="Preview"
               className="h-16 w-16 rounded-lg border border-border object-cover"
             />
