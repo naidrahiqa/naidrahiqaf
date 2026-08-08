@@ -65,7 +65,7 @@ export function Button({
       className={cn(
         "inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none",
         variant === "primary" &&
-          "bg-accent text-background shadow-sm hover:bg-accent/90 hover:shadow-lg hover:shadow-accent/15 hover:-translate-y-0.5",
+          "bg-accent text-on-accent shadow-sm hover:bg-accent-hover hover:shadow-lg hover:shadow-accent/20 hover:-translate-y-0.5",
         variant === "secondary" &&
           "border border-border bg-surface/50 text-foreground hover:border-border-hover hover:text-accent",
         variant === "danger" &&

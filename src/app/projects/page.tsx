@@ -40,7 +40,7 @@ export default async function ProjectsPage() {
         <p className="text-xs uppercase tracking-widest text-accent">
           Projects
         </p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+        <h1 className="mt-2 font-display text-3xl font-bold uppercase tracking-tight sm:text-4xl">
           My <span className="gradient-text">Work</span>
         </h1>
         <p className="mt-4 text-muted">

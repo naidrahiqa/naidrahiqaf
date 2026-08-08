@@ -21,7 +21,7 @@ export default async function AchievementsPage() {
         <p className="text-xs uppercase tracking-widest text-accent">
           Achievements
         </p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+        <h1 className="mt-2 font-display text-3xl font-bold uppercase tracking-tight sm:text-4xl">
           Awards & <span className="gradient-text">Milestones</span>
         </h1>
         <p className="mt-3 max-w-xl text-sm text-muted">

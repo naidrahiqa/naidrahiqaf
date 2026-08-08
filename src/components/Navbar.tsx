@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const links = [
   { href: "/", label: "Home" },
@@ -40,9 +41,9 @@ export default function Navbar() {
       <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-5 sm:px-8">
         <Link
           href="/"
-          className="text-sm font-bold tracking-tight transition-colors hover:text-accent"
+          className="font-display text-base font-bold tracking-tight uppercase transition-colors hover:text-accent"
         >
-          <span className="gradient-text">naidrahiqa</span>
+          naidrahiqa
         </Link>
 
         <nav className="hidden md:flex items-center gap-0.5">
@@ -65,13 +66,16 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <button
-          className="md:hidden p-2 rounded-lg text-muted hover:text-foreground transition-colors"
-          onClick={() => setOpen(!open)}
-          aria-label="Toggle menu"
-        >
-          {open ? <X size={20} /> : <Menu size={20} />}
-        </button>
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+          <button
+            className="md:hidden p-2 rounded-lg text-muted hover:text-foreground transition-colors"
+            onClick={() => setOpen(!open)}
+            aria-label="Toggle menu"
+          >
+            {open ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
       </div>
 
       {open && (

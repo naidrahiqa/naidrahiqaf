@@ -46,7 +46,7 @@ export default async function SchoolSubjectPage({
         <p className="text-xs uppercase tracking-wider text-accent">
           {cls.toUpperCase()} · mapel
         </p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+        <h1 className="mt-2 font-display text-3xl font-bold uppercase tracking-tight sm:text-4xl">
           {displayName}
         </h1>
         <p className="mt-3 text-muted">{items.length} showcase</p>

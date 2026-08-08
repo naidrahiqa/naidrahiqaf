@@ -4,13 +4,14 @@ import { useState } from "react";
 import { Award, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AchievementBadge } from "@/components/cards";
+import { PDFThumbnail } from "@/components/PDFThumbnail";
 import type { Achievement } from "@/lib/types";
 
 const filters = [
-  { key: "all", label: "all" },
-  { key: "competition", label: "competitions" },
-  { key: "training", label: "trainings" },
-  { key: "seminar", label: "seminars" },
+  { key: "all", label: "All" },
+  { key: "competition", label: "Competitions" },
+  { key: "training", label: "Trainings" },
+  { key: "seminar", label: "Seminars" },
 ] as const;
 
 type FilterKey = (typeof filters)[number]["key"];
@@ -23,57 +24,96 @@ export function AchievementFilter({ items }: { items: Achievement[] }) {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap gap-2">
-        {filters.map((f) => (
+      <div className="flex flex-wrap gap-2.5">
+        {filters.map((f, i) => (
           <button
             key={f.key}
             onClick={() => setActive(f.key)}
             className={cn(
-              "rounded-full border px-4 py-1.5 text-xs font-medium transition-all duration-200",
+              "rounded-full border-2 border-foreground px-4 py-1.5 font-display text-xs font-bold uppercase tracking-wide transition-all duration-200",
               active === f.key
-                ? "border-accent bg-accent/10 text-accent glow-accent"
-                : "border-border bg-surface/50 text-muted hover:text-foreground hover:border-border-hover"
+                ? "bg-accent text-on-accent -rotate-1 hard-shadow-sm"
+                : "bg-surface text-muted hover:rotate-1 hover:text-foreground"
             )}
           >
+            <span
+              className={cn(
+                "mr-1.5",
+                active === f.key ? "text-on-accent/70" : "text-accent"
+              )}
+            >
+              {String(i + 1).padStart(2, "0")}.
+            </span>
             {f.label}
           </button>
         ))}
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-5 sm:grid-cols-2">
         {filtered.map((a, i) => (
           <div
             key={a.id}
-            className="glass group flex flex-col gap-3 rounded-xl p-5 transition-all duration-300 hover:border-border-hover hover:glow-accent"
+            className="flex flex-col gap-3 rounded-xl border-2 border-foreground bg-surface hard-shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:hard-shadow-hover"
           >
-            <div className="flex items-center justify-between gap-3">
-              <AchievementBadge category={a.category} />
-              <span className="text-xs text-muted">{a.year}</span>
-            </div>
-            <div className="flex items-start gap-3">
-              <span className="mt-0.5 text-sm text-accent/50">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <div className="min-w-0">
-                <h3 className="font-semibold leading-snug">{a.title}</h3>
-                {a.event && <p className="mt-1 text-sm text-muted">{a.event}</p>}
-              </div>
-            </div>
-            {a.description && (
-              <p className="text-sm leading-relaxed text-muted">{a.description}</p>
-            )}
-            {a.certificate_url && (
+            {a.certificate_url && a.certificate_url.endsWith(".pdf") && (
               <a
                 href={a.certificate_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-1 inline-flex w-fit items-center gap-1.5 text-xs text-accent transition-colors hover:underline"
+                className="block aspect-[4/3] overflow-hidden border-b-2 border-foreground bg-surface-2"
               >
-                <Award size={13} />
-                certificate
-                <ExternalLink size={12} />
+                <PDFThumbnail url={a.certificate_url} className="h-full w-full" />
               </a>
             )}
+            {a.certificate_url && !a.certificate_url.endsWith(".pdf") && (
+              <a
+                href={a.certificate_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block aspect-[4/3] overflow-hidden border-b-2 border-foreground bg-surface-2"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={a.certificate_url}
+                  alt={a.title}
+                  className="h-full w-full object-cover"
+                />
+              </a>
+            )}
+            <div className="p-5">
+              <div className="flex items-center justify-between gap-3">
+                <AchievementBadge category={a.category} />
+                <span className="font-display text-xs font-bold text-foreground">
+                  {a.year}
+                </span>
+              </div>
+              <div className="flex items-start gap-3 mt-2">
+                <span className="mt-0.5 font-display text-sm font-extrabold text-accent">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className="min-w-0">
+                  <h3 className="font-display font-bold uppercase leading-snug tracking-tight">
+                    {a.title}
+                  </h3>
+                  {a.event && <p className="mt-1 text-sm text-muted">{a.event}</p>}
+                </div>
+              </div>
+              {a.description && (
+                <p className="text-sm leading-relaxed text-muted">{a.description}</p>
+              )}
+              {a.certificate_url && (
+                <a
+                  href={a.certificate_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-1 inline-flex w-fit items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-accent transition-colors hover:underline"
+                >
+                  <Award size={13} />
+                  Certificate
+                  <ExternalLink size={12} />
+                </a>
+              )}
+            </div>
           </div>
         ))}
       </div>

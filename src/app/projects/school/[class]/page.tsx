@@ -83,7 +83,7 @@ export default async function SchoolClassPage({
         <p className="text-xs uppercase tracking-wider text-accent">
           School
         </p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+        <h1 className="mt-2 font-display text-3xl font-bold uppercase tracking-tight sm:text-4xl">
           Kelas <span className="gradient-text">{cls.toUpperCase()}</span>
         </h1>
         <p className="mt-3 text-muted">

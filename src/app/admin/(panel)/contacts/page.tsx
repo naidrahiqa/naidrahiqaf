@@ -130,7 +130,7 @@ export default function ContactsEditorPage() {
           {saving ? "saving..." : "Save all"}
         </Button>
         {saved && (
-          <span className="text-xs text-accent">Saved ✓</span>
+          <span className="text-xs text-accent">Saved</span>
         )}
       </div>
     </div>

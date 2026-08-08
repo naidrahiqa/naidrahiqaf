@@ -21,7 +21,7 @@ export default async function AdminProjectsPage() {
         </div>
         <Link
           href="/admin/projects/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-background transition-all duration-200 hover:bg-accent/90 hover:-translate-y-0.5"
+          className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-on-accent transition-all duration-200 hover:bg-accent-hover hover:-translate-y-0.5"
         >
           <Plus size={15} />
           New Project

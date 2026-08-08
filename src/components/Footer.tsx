@@ -13,7 +13,9 @@ export default async function Footer() {
     <footer className="mt-auto border-t border-border/50 bg-surface/20 backdrop-blur-sm">
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-5 py-10 sm:px-8 md:flex-row md:items-center md:justify-between">
         <div>
-          <p className="text-sm font-bold gradient-text">naidrahiqa</p>
+          <p className="font-display text-sm font-bold uppercase gradient-text">
+            naidrahiqa
+          </p>
           <p className="mt-1 text-xs text-muted">
             Kernel Developer · IoT Builder · CyberSecurity Enthusiast
           </p>

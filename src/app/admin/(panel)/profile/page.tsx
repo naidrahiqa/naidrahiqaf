@@ -136,7 +136,7 @@ export default function ProfileEditorPage() {
         <Button type="button" onClick={save} disabled={saving}>
           {saving ? "saving..." : "Save profile"}
         </Button>
-        {saved && <span className="text-xs text-accent">Saved ✓</span>}
+        {saved && <span className="text-xs text-accent">Saved</span>}
       </div>
     </div>
   );

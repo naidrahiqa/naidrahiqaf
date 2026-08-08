@@ -24,14 +24,14 @@ export function SocialLink({
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="glass group flex items-center gap-4 rounded-xl p-4 transition-all duration-300 hover:border-border-hover hover:glow-accent hover:-translate-y-0.5"
+      className="group flex items-center gap-4 rounded-xl border-2 border-foreground bg-surface p-4 hard-shadow-sm transition-all duration-200 hover:-translate-y-1 hover:hard-shadow-hover"
     >
-      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-muted transition-all duration-300 group-hover:text-accent group-hover:bg-accent/15">
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border-2 border-foreground bg-accent text-on-accent transition-transform duration-200 group-hover:rotate-6 group-hover:scale-105">
         <BrandIcon platform={platform} size={20} />
       </span>
       <span className="min-w-0">
-        <span className="block text-sm font-semibold capitalize">{platform}</span>
-        <span className="block truncate text-xs text-muted">
+        <span className="block text-sm font-bold uppercase tracking-wide">{platform}</span>
+        <span className="block truncate text-xs font-semibold text-muted">
           {handle || url}
         </span>
       </span>
