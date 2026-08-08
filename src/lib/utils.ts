@@ -39,9 +39,12 @@ export function getDriveId(url: string): string | null {
 }
 
 export function getStoragePath(url: string): string | null {
-  if (url.startsWith("media/")) return url;
-  const match = url.match(/\/storage\/v1\/object\/public\/media\/(.+)$/);
-  return match ? match[1] : null;
+  if (url.startsWith("http")) {
+    const match = url.match(/\/storage\/v1\/object\/public\/media\/(.+)$/);
+    return match ? match[1] : null;
+  }
+  // Bare filename or media/... path
+  return url;
 }
 
 export function storagePublicUrl(path: string): string {
@@ -51,11 +54,14 @@ export function storagePublicUrl(path: string): string {
 
 export function resolveImageUrl(url: string | null | undefined): string {
   if (!url) return "";
-  if (url.startsWith("media/")) return storagePublicUrl(url);
-  const driveId = getDriveId(url);
-  if (driveId && url.includes("drive.google.com"))
-    return `https://lh3.googleusercontent.com/d/${driveId}=s0`;
-  return url;
+  if (url.startsWith("http")) {
+    const driveId = getDriveId(url);
+    if (driveId && url.includes("drive.google.com"))
+      return `https://lh3.googleusercontent.com/d/${driveId}=s0`;
+    return url;
+  }
+  // Bare filename or media/... path → Supabase Storage URL
+  return storagePublicUrl(url);
 }
 
 export function detectVideoType(
