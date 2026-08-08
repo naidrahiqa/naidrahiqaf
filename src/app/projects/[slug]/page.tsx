@@ -3,8 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { cn, formatDate, slugify } from "@/lib/utils";
-import { ProjectLayout } from "@/components/ProjectLayout";
+import { cn, formatDate, resolveImageUrl, slugify } from "@/lib/utils";
+import { MarkdownContent } from "@/components/MarkdownContent";
+import { VideoEmbed } from "@/components/VideoEmbed";
+import { ProjectGallery } from "@/components/ProjectGallery";
 
 export async function generateMetadata({
   params,
@@ -58,8 +60,13 @@ export default async function ProjectDetailPage({
         : `Kelas ${project.class_level}`
       : "Projects";
 
+  const cover = project.cover_image ? resolveImageUrl(project.cover_image) : null;
+  const hasVideo = project.video_url && project.video_type !== "none";
+  const hasMedia = (media ?? []).length > 0;
+
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-8 pt-12 sm:pt-16">
+      {/* Back */}
       <Link
         href={backHref}
         className="inline-flex w-fit items-center gap-2 text-sm text-muted transition-colors hover:text-accent"
@@ -68,6 +75,7 @@ export default async function ProjectDetailPage({
         {backLabel}
       </Link>
 
+      {/* Header */}
       <header className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">
           <span
@@ -91,11 +99,13 @@ export default async function ProjectDetailPage({
             </span>
           )}
         </div>
-        <h1 className="text-2xl font-bold tracking-tight sm:text-4xl">
+        <h1 className="font-display text-3xl font-bold uppercase tracking-tight sm:text-4xl">
           {project.title}
         </h1>
         {project.description && (
-          <p className="leading-relaxed text-muted">{project.description}</p>
+          <p className="text-lg leading-relaxed text-muted">
+            {project.description}
+          </p>
         )}
         <div className="flex flex-wrap items-center gap-4 text-sm text-muted">
           <time>{formatDate(project.created_at)}</time>
@@ -113,7 +123,41 @@ export default async function ProjectDetailPage({
         </div>
       </header>
 
-      <ProjectLayout project={project} media={media ?? []} />
+      {/* Cover image */}
+      {cover && (
+        <div className="overflow-hidden rounded-2xl border-2 border-foreground bg-surface hard-shadow-sm">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={cover}
+            alt={project.title}
+            className="w-full object-cover"
+          />
+        </div>
+      )}
+
+      {/* Video */}
+      {hasVideo && (
+        <VideoEmbed
+          url={project.video_url}
+          type={project.video_type}
+          title={project.title}
+        />
+      )}
+
+      {/* Content (markdown) */}
+      {project.content && (
+        <MarkdownContent content={project.content} />
+      )}
+
+      {/* Gallery */}
+      {hasMedia && (
+        <section className="flex flex-col gap-4">
+          <h2 className="font-display text-lg font-bold uppercase tracking-tight">
+            Gallery
+          </h2>
+          <ProjectGallery media={media ?? []} />
+        </section>
+      )}
     </div>
   );
 }
