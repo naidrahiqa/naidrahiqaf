@@ -56,7 +56,7 @@ export function resolveImageUrl(url: string | null | undefined): string {
   if (!url) return "";
   if (url.startsWith("http")) {
     const driveId = getDriveId(url);
-    if (driveId && url.includes("drive.google.com"))
+    if (driveId && (url.includes("drive.google.com") || url.includes("docs.google.com")))
       return `https://lh3.googleusercontent.com/d/${driveId}=s0`;
     return url;
   }
@@ -70,6 +70,7 @@ export function detectVideoType(
   if (!url) return "none";
   if (getYouTubeId(url)) return "youtube";
   if (getDriveId(url)) return "drive";
-  if (getStoragePath(url)) return "storage";
+  if (url.startsWith("http") && url.includes("/storage/v1/object/public/media/")) return "storage";
+  if (url.startsWith("media/")) return "storage";
   return "none";
 }

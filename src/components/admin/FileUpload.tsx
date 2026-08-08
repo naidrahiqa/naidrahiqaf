@@ -7,8 +7,11 @@ import { createClient } from "@/lib/supabase/client";
 function convertGoogleDriveUrl(url: string): string {
   const match = url.match(/drive\.google\.com\/file\/d\/([^/]+)\//);
   if (match) return `https://lh3.googleusercontent.com/d/${match[1]}=s0`;
-  const match2 = url.match(/[?&]id=([^&]+)/);
-  if (match2 && url.includes("drive.google.com")) return `https://lh3.googleusercontent.com/d/${match2[1]}=s0`;
+  const match2 = url.match(/docs\.google\.com\/(?:document|file)\/d\/([^/]+)/);
+  if (match2) return `https://lh3.googleusercontent.com/d/${match2[1]}=s0`;
+  const match3 = url.match(/[?&]id=([^&]+)/);
+  if (match3 && (url.includes("drive.google.com") || url.includes("docs.google.com")))
+    return `https://lh3.googleusercontent.com/d/${match3[1]}=s0`;
   return url;
 }
 
@@ -38,7 +41,8 @@ function isImageUrl(url: string): boolean {
 
 function getPreviewUrl(value: string): string {
   if (value.startsWith("http")) return value;
-  return `https://kcensjxxnvoyacepzbqs.supabase.co/storage/v1/object/public/media/${value.replace(/^media\//, "")}`;
+  const base = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+  return `${base}/storage/v1/object/public/media/${value.replace(/^media\//, "")}`;
 }
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;

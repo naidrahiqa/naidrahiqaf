@@ -25,7 +25,7 @@ function isEmbeddableVideo(media: ProjectMedia): boolean {
   if (media.media_type === "youtube") return true;
   if (media.media_type === "storage") return true;
   if (media.media_type === "drive") {
-    return /drive\.google\.com\/file\/d\//.test(media.url);
+    return /drive\.google\.com\/(file\/d\/|open\?id=)/.test(media.url);
   }
   return false;
 }

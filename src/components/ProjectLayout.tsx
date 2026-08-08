@@ -10,7 +10,7 @@ import { ImageLightbox } from "@/components/ImageLightbox";
 import type { Project, ProjectMedia } from "@/lib/types";
 
 function getSourceHref(url: string): string {
-  if (url.includes("drive.google.com")) return url;
+  if (url.includes("drive.google.com") || url.includes("docs.google.com")) return url;
   if (url.startsWith("media/")) {
     const base = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
     return `${base}/storage/v1/object/public/media/${url.replace(/^media\//, "")}`;

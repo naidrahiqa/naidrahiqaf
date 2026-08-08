@@ -58,13 +58,17 @@ export function ProjectForm({ initial }: { initial?: Project | null }) {
   const [published, setPublished] = useState(initial?.published ?? true);
   const [featured, setFeatured] = useState(initial?.featured ?? false);
   const [media, setMedia] = useState<MediaDraft[]>([]);
+  const [mediaLoaded, setMediaLoaded] = useState(!initial);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!initial) return;
     fetch(`/api/admin/projects/${initial.id}/media`)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error("Failed to load media");
+        return r.json();
+      })
       .then((data: ProjectMedia[]) => {
         if (Array.isArray(data)) {
           setMedia(
@@ -75,12 +79,19 @@ export function ProjectForm({ initial }: { initial?: Project | null }) {
             }))
           );
         }
+        setMediaLoaded(true);
       })
-      .catch(() => {});
+      .catch(() => {
+        setError("Failed to load existing media. Save without changing media to avoid data loss.");
+      });
   }, [initial]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (isEdit && !mediaLoaded) {
+      setError("Media not loaded yet. Wait for it to load before saving.");
+      return;
+    }
     setSaving(true);
     setError(null);
 
