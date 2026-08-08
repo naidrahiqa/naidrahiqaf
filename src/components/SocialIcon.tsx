@@ -19,11 +19,15 @@ export function SocialLink({
   handle: string;
   url: string;
 }) {
+  const href = platform === "email" 
+    ? (url.startsWith("mailto:") ? url : `mailto:${handle || url}`)
+    : url;
+
   return (
     <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
+      href={href}
+      target={platform === "email" ? undefined : "_blank"}
+      rel={platform === "email" ? undefined : "noopener noreferrer"}
       className="group flex items-center gap-4 rounded-xl border-2 border-foreground bg-surface p-4 hard-shadow-sm transition-all duration-200 hover:-translate-y-1 hover:hard-shadow-hover"
     >
       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border-2 border-foreground bg-accent text-on-accent transition-transform duration-200 group-hover:rotate-6 group-hover:scale-105">

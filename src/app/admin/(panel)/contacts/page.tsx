@@ -8,7 +8,10 @@ import {
   Card,
   Input,
   Label,
+  Select,
 } from "@/components/admin/ui";
+
+const platforms = ["email", "github", "instagram", "linkedin", "telegram", "whatsapp", "discord", "threads"];
 
 export default function ContactsEditorPage() {
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -34,6 +37,26 @@ export default function ContactsEditorPage() {
     );
   }
 
+  function addContact() {
+    setSaved(false);
+    const newId = `new-${Date.now()}`;
+    setContacts((prev) => [
+      ...prev,
+      {
+        id: newId,
+        platform: "email",
+        handle: "",
+        url: "",
+        sort_order: prev.length,
+      },
+    ]);
+  }
+
+  function removeContact(id: string) {
+    setSaved(false);
+    setContacts((prev) => prev.filter((c) => c.id !== id));
+  }
+
   async function saveAll() {
     setSaving(true);
     setError(null);
@@ -45,6 +68,7 @@ export default function ContactsEditorPage() {
         body: JSON.stringify(
           contacts.map((c) => ({
             id: c.id,
+            platform: c.platform,
             handle: c.handle,
             url: c.url,
             sort_order: c.sort_order,
@@ -89,9 +113,17 @@ export default function ContactsEditorPage() {
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-surface-2 text-muted">
                 <BrandIcon platform={c.platform} size={18} />
               </span>
-              <div>
-                <p className="text-sm font-semibold capitalize">{c.platform}</p>
-                <p className="text-[11px] text-muted">{c.handle}</p>
+              <div className="flex-1">
+                <Label htmlFor={`platform-${c.id}`}>platform</Label>
+                <Select
+                  id={`platform-${c.id}`}
+                  value={c.platform}
+                  onChange={(e) => update(c.id, { platform: e.target.value })}
+                >
+                  {platforms.map((p) => (
+                    <option key={p} value={p}>{p}</option>
+                  ))}
+                </Select>
               </div>
             </div>
             <div className="flex-1">
@@ -100,6 +132,7 @@ export default function ContactsEditorPage() {
                 id={`handle-${c.id}`}
                 value={c.handle}
                 onChange={(e) => update(c.id, { handle: e.target.value })}
+                placeholder={c.platform === "email" ? "email@example.com" : ""}
               />
             </div>
             <div className="flex-1">
@@ -108,6 +141,7 @@ export default function ContactsEditorPage() {
                 id={`url-${c.id}`}
                 value={c.url}
                 onChange={(e) => update(c.id, { url: e.target.value })}
+                placeholder={c.platform === "email" ? "mailto:email@example.com" : ""}
               />
             </div>
             <div className="w-20">
@@ -121,11 +155,22 @@ export default function ContactsEditorPage() {
                 }
               />
             </div>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => removeContact(c.id)}
+              className="sm:w-20"
+            >
+              Remove
+            </Button>
           </Card>
         ))}
       </div>
 
       <div className="flex items-center gap-3">
+        <Button type="button" onClick={addContact}>
+          + Add Contact
+        </Button>
         <Button type="button" onClick={saveAll} disabled={saving}>
           {saving ? "saving..." : "Save all"}
         </Button>

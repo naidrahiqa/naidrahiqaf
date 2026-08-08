@@ -26,11 +26,15 @@ export async function PUT(request: Request) {
   }
 
   const supabase = await createClient();
+  
+  // Delete all existing contacts and re-insert
+  await supabase.from("contacts").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+  
   const { error } = await supabase
     .from("contacts")
-    .upsert(
-      items.map((i: { id: string; handle?: string; url?: string; sort_order?: number }) => ({
-        id: i.id,
+    .insert(
+      items.map((i: { id: string; platform?: string; handle?: string; url?: string; sort_order?: number }) => ({
+        platform: i.platform ?? "email",
         handle: i.handle ?? "",
         url: i.url ?? "",
         sort_order: i.sort_order ?? 0,
