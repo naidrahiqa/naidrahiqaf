@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { CLASS_LEVELS } from "@/lib/utils";
+import { CLASS_LEVELS, slugify } from "@/lib/utils";
 import { ProjectCard } from "@/components/cards";
 import type { Project } from "@/lib/types";
 
@@ -30,6 +30,29 @@ export default async function SchoolClassPage({
   const items = (data ?? []) as Project[];
   if (items.length === 0) notFound();
 
+  const groups: { name: string; items: Project[] }[] = [];
+  const bySubject = new Map<string, Project[]>();
+  const unfiled: Project[] = [];
+
+  for (const item of items) {
+    if (item.subject) {
+      const key = slugify(item.subject);
+      if (!bySubject.has(key)) bySubject.set(key, []);
+      bySubject.get(key)!.push(item);
+    } else {
+      unfiled.push(item);
+    }
+  }
+
+  for (const [, list] of bySubject) {
+    groups.push({ name: list[0].subject, items: list });
+  }
+  groups.sort((a, b) => a.name.localeCompare(b.name));
+
+  if (unfiled.length > 0) {
+    groups.push({ name: "Lainnya", items: unfiled });
+  }
+
   return (
     <div className="flex flex-col gap-10 pt-12 sm:pt-16">
       <Link
@@ -47,12 +70,28 @@ export default async function SchoolClassPage({
         <h1 className="mt-2 font-display text-3xl font-bold uppercase tracking-tight sm:text-4xl">
           Kelas <span className="gradient-text">{cls.toUpperCase()}</span>
         </h1>
-        <p className="mt-3 text-muted">{items.length} showcase</p>
+        <p className="mt-3 text-muted">
+          {groups.length} mapel · {items.length} showcase
+        </p>
       </header>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((p) => (
-          <ProjectCard key={p.id} project={p} />
+      <div className="flex flex-col gap-12">
+        {groups.map((g) => (
+          <section key={slugify(g.name)} className="flex flex-col gap-4">
+            <div>
+              <p className="text-xs uppercase tracking-wider text-accent">
+                mapel
+              </p>
+              <h2 className="mt-1 text-xl font-bold tracking-tight">
+                {g.name}
+              </h2>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {g.items.map((p) => (
+                <ProjectCard key={p.id} project={p} />
+              ))}
+            </div>
+          </section>
         ))}
       </div>
     </div>
