@@ -27,8 +27,10 @@ function isPdfUrl(url: string): boolean {
 
 function isImageUrl(url: string): boolean {
   if (isLocalPath(url)) return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url);
-  return /\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i.test(url) || 
-         url.includes("drive.google.com/uc?export=view");
+  if (/\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i.test(url)) return true;
+  if (url.includes("lh3.googleusercontent.com/d/")) return true;
+  if (url.includes("drive.google.com")) return true;
+  return false;
 }
 
 function getSupabaseUrl(path: string): string {

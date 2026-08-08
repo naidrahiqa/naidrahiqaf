@@ -6,14 +6,20 @@ import { createClient } from "@/lib/supabase/client";
 
 function convertGoogleDriveUrl(url: string): string {
   const match = url.match(/drive\.google\.com\/file\/d\/([^/]+)\//);
-  if (match) return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+  if (match) return `https://lh3.googleusercontent.com/d/${match[1]}`;
   const match2 = url.match(/[?&]id=([^&]+)/);
-  if (match2 && url.includes("drive.google.com")) return `https://drive.google.com/uc?export=view&id=${match2[1]}`;
+  if (match2 && url.includes("drive.google.com")) return `https://lh3.googleusercontent.com/d/${match2[1]}`;
   return url;
 }
 
+function isGoogleDriveUrl(url: string): boolean {
+  return url.includes("drive.google.com") || url.includes("lh3.googleusercontent.com/d/");
+}
+
 function isImageUrl(url: string): boolean {
-  return /\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i.test(url) || url.includes("drive.google.com/uc?export=view");
+  if (/\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i.test(url)) return true;
+  if (isGoogleDriveUrl(url)) return true;
+  return false;
 }
 
 function getPreviewUrl(value: string): string {
