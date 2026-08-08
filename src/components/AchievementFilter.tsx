@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Award, ExternalLink } from "lucide-react";
+import { Award, ExternalLink, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AchievementBadge } from "@/components/cards";
 import { PDFThumbnail } from "@/components/PDFThumbnail";
@@ -16,11 +16,84 @@ const filters = [
 
 type FilterKey = (typeof filters)[number]["key"];
 
+function isLocalPath(url: string): boolean {
+  return url.startsWith("media/");
+}
+
+function isPdfUrl(url: string): boolean {
+  if (isLocalPath(url)) return url.endsWith(".pdf");
+  return /\.pdf(\?.*)?$/i.test(url);
+}
+
+function isImageUrl(url: string): boolean {
+  if (isLocalPath(url)) return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url);
+  return /\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i.test(url) || 
+         url.includes("drive.google.com/uc?export=view");
+}
+
+function getSupabaseUrl(path: string): string {
+  const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  return `${base}/storage/v1/object/public/${path}`;
+}
+
 export function AchievementFilter({ items }: { items: Achievement[] }) {
   const [active, setActive] = useState<FilterKey>("all");
 
   const filtered =
     active === "all" ? items : items.filter((a) => a.category === active);
+
+  function renderThumbnail(a: Achievement) {
+    if (!a.certificate_url) return null;
+    
+    const url = isLocalPath(a.certificate_url) 
+      ? getSupabaseUrl(a.certificate_url) 
+      : a.certificate_url;
+
+    if (isPdfUrl(a.certificate_url)) {
+      return (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block aspect-[4/3] overflow-hidden border-b-2 border-foreground bg-surface-2"
+        >
+          <PDFThumbnail url={url} className="h-full w-full" />
+        </a>
+      );
+    }
+    
+    if (isImageUrl(a.certificate_url)) {
+      return (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block aspect-[4/3] overflow-hidden border-b-2 border-foreground bg-surface-2"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={url}
+            alt={a.title}
+            className="h-full w-full object-cover"
+          />
+        </a>
+      );
+    }
+
+    // Unknown file type or Google Drive file
+    return (
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex aspect-[4/3] items-center justify-center gap-2 border-b-2 border-foreground bg-surface-2 text-muted transition-colors hover:text-accent"
+      >
+        <FileText size={24} />
+        <span className="text-xs font-bold uppercase">View Certificate</span>
+        <ExternalLink size={12} />
+      </a>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -55,31 +128,7 @@ export function AchievementFilter({ items }: { items: Achievement[] }) {
             key={a.id}
             className="flex flex-col gap-3 rounded-xl border-2 border-foreground bg-surface hard-shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:hard-shadow-hover"
           >
-            {a.certificate_url && a.certificate_url.endsWith(".pdf") && (
-              <a
-                href={a.certificate_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block aspect-[4/3] overflow-hidden border-b-2 border-foreground bg-surface-2"
-              >
-                <PDFThumbnail url={a.certificate_url} className="h-full w-full" />
-              </a>
-            )}
-            {a.certificate_url && !a.certificate_url.endsWith(".pdf") && (
-              <a
-                href={a.certificate_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block aspect-[4/3] overflow-hidden border-b-2 border-foreground bg-surface-2"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={a.certificate_url}
-                  alt={a.title}
-                  className="h-full w-full object-cover"
-                />
-              </a>
-            )}
+            {renderThumbnail(a)}
             <div className="p-5">
               <div className="flex items-center justify-between gap-3">
                 <AchievementBadge category={a.category} />
@@ -103,7 +152,7 @@ export function AchievementFilter({ items }: { items: Achievement[] }) {
               )}
               {a.certificate_url && (
                 <a
-                  href={a.certificate_url}
+                  href={isLocalPath(a.certificate_url) ? getSupabaseUrl(a.certificate_url) : a.certificate_url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-1 inline-flex w-fit items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-accent transition-colors hover:underline"
