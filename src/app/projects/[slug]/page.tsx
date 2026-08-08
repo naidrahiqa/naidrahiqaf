@@ -4,9 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { cn, formatDate, slugify } from "@/lib/utils";
-import { MarkdownContent } from "@/components/MarkdownContent";
-import { VideoEmbed } from "@/components/VideoEmbed";
-import { ProjectGallery } from "@/components/ProjectGallery";
+import { ProjectLayout } from "@/components/ProjectLayout";
 
 export async function generateMetadata({
   params,
@@ -115,15 +113,7 @@ export default async function ProjectDetailPage({
         </div>
       </header>
 
-      <VideoEmbed
-        url={project.video_url}
-        type={project.video_type}
-        title={project.title}
-      />
-
-      <ProjectGallery media={media ?? []} />
-
-      {project.content && <MarkdownContent content={project.content} />}
+      <ProjectLayout project={project} media={media ?? []} />
     </div>
   );
 }

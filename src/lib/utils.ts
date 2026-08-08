@@ -46,7 +46,16 @@ export function getStoragePath(url: string): string | null {
 
 export function storagePublicUrl(path: string): string {
   const base = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-  return `${base}/storage/v1/object/public/media/${path}`;
+  return `${base}/storage/v1/object/public/media/${path.replace(/^media\//, "")}`;
+}
+
+export function resolveImageUrl(url: string | null | undefined): string {
+  if (!url) return "";
+  if (url.startsWith("media/")) return storagePublicUrl(url);
+  const driveId = getDriveId(url);
+  if (driveId && url.includes("drive.google.com"))
+    return `https://lh3.googleusercontent.com/d/${driveId}=s0`;
+  return url;
 }
 
 export function detectVideoType(

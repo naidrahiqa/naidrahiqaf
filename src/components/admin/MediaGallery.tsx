@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ArrowDown, ArrowUp, ImagePlus, Plus, Trash2 } from "lucide-react";
 import type { ProjectMediaType } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { cn, resolveImageUrl } from "@/lib/utils";
 import { Input, Label, Select } from "@/components/admin/ui";
 import { FileUpload } from "@/components/admin/FileUpload";
 
@@ -182,9 +182,7 @@ export function MediaGallery({
               <div className="mt-3 overflow-hidden rounded-lg border border-border bg-background">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={item.url.startsWith("media/")
-                    ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${item.url}`
-                    : item.url}
+                  src={resolveImageUrl(item.url)}
                   alt="preview"
                   className={cn("max-h-40 w-full object-contain")}
                 />

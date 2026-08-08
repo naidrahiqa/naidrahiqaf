@@ -13,6 +13,7 @@ export const projectFields = [
   "title",
   "slug",
   "category",
+  "layout",
   "class_level",
   "subject",
   "description",

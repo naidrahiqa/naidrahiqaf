@@ -1,12 +1,9 @@
-import { getStoragePath, storagePublicUrl } from "@/lib/utils";
+import { resolveImageUrl } from "@/lib/utils";
 import { VideoEmbed } from "@/components/VideoEmbed";
 import type { ProjectMedia } from "@/lib/types";
 
 function resolveMediaUrl(media: ProjectMedia): string {
-  if (media.media_type === "image") {
-    const path = getStoragePath(media.url);
-    return path ? storagePublicUrl(path) : media.url;
-  }
+  if (media.media_type === "image") return resolveImageUrl(media.url);
   return media.url;
 }
 

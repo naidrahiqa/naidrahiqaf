@@ -44,6 +44,21 @@ export interface Post {
 
 export type ProjectCategory = "school" | "personal";
 
+export type ProjectLayout =
+  | "text-first"
+  | "gallery-first"
+  | "cover-hero"
+  | "masonry"
+  | "video-focus";
+
+export const PROJECT_LAYOUTS: ProjectLayout[] = [
+  "text-first",
+  "gallery-first",
+  "cover-hero",
+  "masonry",
+  "video-focus",
+];
+
 export type ProjectMediaType = "image" | "youtube" | "drive" | "storage";
 
 export interface ProjectMedia {
@@ -61,6 +76,7 @@ export interface Project {
   title: string;
   slug: string;
   category: ProjectCategory;
+  layout: ProjectLayout;
   class_level: string;
   subject: string;
   description: string;
@@ -105,6 +121,7 @@ export interface ProjectInsert {
   title: string;
   slug: string;
   category: ProjectCategory;
+  layout?: ProjectLayout;
   class_level?: string;
   subject?: string;
   description?: string;

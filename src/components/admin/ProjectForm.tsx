@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Wand2 } from "lucide-react";
 import { slugify } from "@/lib/utils";
-import type { Project, ProjectMedia } from "@/lib/types";
+import type { Project, ProjectMedia, ProjectLayout } from "@/lib/types";
 import {
   Button,
   Card,
@@ -20,6 +20,14 @@ import { MediaGallery, type MediaDraft } from "@/components/admin/MediaGallery";
 
 const classLevels = ["", "x", "xi", "xii"];
 
+const layoutOptions: { value: ProjectLayout; label: string; hint: string }[] = [
+  { value: "video-focus", label: "video focus", hint: "video besar di atas, lalu gallery & teks" },
+  { value: "gallery-first", label: "gallery first", hint: "grid media besar, teks di bawah" },
+  { value: "text-first", label: "text first", hint: "konten markdown dulu, gallery di bawah" },
+  { value: "cover-hero", label: "cover hero", hint: "gambar sampul penuh di hero" },
+  { value: "masonry", label: "masonry", hint: "kolom foto bebas tinggi, teks minimal" },
+];
+
 export function ProjectForm({ initial }: { initial?: Project | null }) {
   const router = useRouter();
   const isEdit = Boolean(initial);
@@ -28,6 +36,9 @@ export function ProjectForm({ initial }: { initial?: Project | null }) {
   const [slug, setSlug] = useState(initial?.slug ?? "");
   const [category, setCategory] = useState<"school" | "personal">(
     initial?.category ?? "school"
+  );
+  const [layout, setLayout] = useState<ProjectLayout>(
+    initial?.layout ?? "video-focus"
   );
   const [classLevel, setClassLevel] = useState(initial?.class_level ?? "");
   const [subject, setSubject] = useState(initial?.subject ?? "");
@@ -76,6 +87,7 @@ export function ProjectForm({ initial }: { initial?: Project | null }) {
       title,
       slug,
       category,
+      layout,
       class_level: category === "school" ? classLevel : "",
       subject: category === "school" ? subject : "",
       description,
@@ -157,6 +169,21 @@ export function ProjectForm({ initial }: { initial?: Project | null }) {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <Label htmlFor="layout">detail layout</Label>
+            <Select
+              id="layout"
+              value={layout}
+              onChange={(e) => setLayout(e.target.value as ProjectLayout)}
+            >
+              {layoutOptions.map((l) => (
+                <option key={l.value} value={l.value}>{l.label}</option>
+              ))}
+            </Select>
+            <p className="mt-1.5 font-mono text-[11px] text-muted">
+              {layoutOptions.find((l) => l.value === layout)?.hint}
+            </p>
+          </div>
           <div>
             <Label htmlFor="category">category</Label>
             <Select
