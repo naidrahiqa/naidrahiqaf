@@ -70,6 +70,7 @@ export interface Project {
   video_type: VideoType;
   link: string | null;
   published: boolean;
+  featured: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -113,6 +114,7 @@ export interface ProjectInsert {
   video_type?: VideoType;
   link?: string | null;
   published?: boolean;
+  featured?: boolean;
 }
 
 export interface ProjectMediaInsert {

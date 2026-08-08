@@ -44,6 +44,7 @@ export function ProjectForm({ initial }: { initial?: Project | null }) {
   );
   const [link, setLink] = useState(initial?.link ?? "");
   const [published, setPublished] = useState(initial?.published ?? true);
+  const [featured, setFeatured] = useState(initial?.featured ?? false);
   const [media, setMedia] = useState<MediaDraft[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -84,6 +85,7 @@ export function ProjectForm({ initial }: { initial?: Project | null }) {
       video_type: videoType,
       link: link || null,
       published,
+      featured,
     };
 
     try {
@@ -253,15 +255,26 @@ export function ProjectForm({ initial }: { initial?: Project | null }) {
           />
         </div>
 
-        <label className="flex w-fit cursor-pointer items-center gap-2.5">
-          <input
-            type="checkbox"
-            checked={published}
-            onChange={(e) => setPublished(e.target.checked)}
-            className="h-4 w-4 accent-emerald-400"
-          />
-          <StatusPill ok={published} text={published ? "published" : "hidden"} />
-        </label>
+        <div className="flex flex-wrap gap-4">
+          <label className="flex w-fit cursor-pointer items-center gap-2.5">
+            <input
+              type="checkbox"
+              checked={published}
+              onChange={(e) => setPublished(e.target.checked)}
+              className="h-4 w-4 accent-emerald-400"
+            />
+            <StatusPill ok={published} text={published ? "published" : "hidden"} />
+          </label>
+          <label className="flex w-fit cursor-pointer items-center gap-2.5">
+            <input
+              type="checkbox"
+              checked={featured}
+              onChange={(e) => setFeatured(e.target.checked)}
+              className="h-4 w-4 accent-accent"
+            />
+            <StatusPill ok={featured} text={featured ? "featured" : "not featured"} />
+          </label>
+        </div>
       </Card>
 
       {error && (

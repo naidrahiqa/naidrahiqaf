@@ -1,16 +1,29 @@
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Plus, Star } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { StatusPill } from "@/components/admin/ui";
 
-export default async function AdminProjectsPage() {
+export default async function AdminProjectsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string }>;
+}) {
+  const params = await searchParams;
+  const category = params.category;
+  
   const supabase = await createClient();
-  const { data: projects } = await supabase
+  let query = supabase
     .from("projects")
     .select("*")
     .order("created_at", { ascending: false });
+  
+  if (category === "school" || category === "personal") {
+    query = query.eq("category", category);
+  }
+  
+  const { data: projects } = await query;
 
   return (
     <div className="flex flex-col gap-6">
@@ -27,6 +40,43 @@ export default async function AdminProjectsPage() {
           New Project
         </Link>
       </header>
+
+      {/* Category tabs */}
+      <div className="flex gap-2">
+        <Link
+          href="/admin/projects"
+          className={cn(
+            "rounded-lg px-4 py-2 text-sm font-semibold transition-colors",
+            !category
+              ? "bg-accent text-on-accent"
+              : "bg-surface-2 text-muted hover:text-foreground"
+          )}
+        >
+          All
+        </Link>
+        <Link
+          href="/admin/projects?category=school"
+          className={cn(
+            "rounded-lg px-4 py-2 text-sm font-semibold transition-colors",
+            category === "school"
+              ? "bg-accent text-on-accent"
+              : "bg-surface-2 text-muted hover:text-foreground"
+          )}
+        >
+          School
+        </Link>
+        <Link
+          href="/admin/projects?category=personal"
+          className={cn(
+            "rounded-lg px-4 py-2 text-sm font-semibold transition-colors",
+            category === "personal"
+              ? "bg-accent text-on-accent"
+              : "bg-surface-2 text-muted hover:text-foreground"
+          )}
+        >
+          Personal
+        </Link>
+      </div>
 
       {/* Desktop table */}
       <div className="hidden md:block overflow-x-auto rounded-xl border border-border bg-surface">
@@ -46,12 +96,17 @@ export default async function AdminProjectsPage() {
                 className="border-b border-border/50 last:border-0"
               >
                 <td className="px-4 py-3">
-                  <Link
-                    href={`/admin/projects/${project.id}`}
-                    className="font-medium hover:text-accent"
-                  >
-                    {project.title}
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={`/admin/projects/${project.id}`}
+                      className="font-medium hover:text-accent"
+                    >
+                      {project.title}
+                    </Link>
+                    {project.featured && (
+                      <Star size={14} className="fill-accent text-accent" />
+                    )}
+                  </div>
                   <p className="text-[11px] text-muted">
                     /projects/{project.slug}
                   </p>
@@ -71,7 +126,12 @@ export default async function AdminProjectsPage() {
                   </span>
                 </td>
                 <td className="px-4 py-3">
-                  <StatusPill ok={project.published} text={project.published ? "published" : "hidden"} />
+                  <div className="flex gap-2">
+                    <StatusPill ok={project.published} text={project.published ? "published" : "hidden"} />
+                    {project.featured && (
+                      <span className="rounded-full bg-accent/10 px-2 py-0.5 text-[11px] text-accent">featured</span>
+                    )}
+                  </div>
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex justify-end gap-2">
@@ -104,12 +164,17 @@ export default async function AdminProjectsPage() {
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <Link
-                  href={`/admin/projects/${project.id}`}
-                  className="font-semibold hover:text-accent"
-                >
-                  {project.title}
-                </Link>
+                <div className="flex items-center gap-2">
+                  <Link
+                    href={`/admin/projects/${project.id}`}
+                    className="font-semibold hover:text-accent"
+                  >
+                    {project.title}
+                  </Link>
+                  {project.featured && (
+                    <Star size={14} className="fill-accent text-accent" />
+                  )}
+                </div>
                 <p className="text-[11px] text-muted">/projects/{project.slug}</p>
               </div>
               <StatusPill ok={project.published} text={project.published ? "pub" : "hid"} />
@@ -127,6 +192,9 @@ export default async function AdminProjectsPage() {
                 {project.class_level ? ` · ${project.class_level}` : ""}
                 {project.subject ? ` · ${project.subject}` : ""}
               </span>
+              {project.featured && (
+                <span className="rounded-full bg-accent/10 px-2 py-0.5 text-[10px] text-accent">featured</span>
+              )}
             </div>
             <div className="flex gap-2">
               <Link

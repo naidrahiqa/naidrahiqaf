@@ -15,6 +15,7 @@ export default async function HomePage() {
         .from("projects")
         .select("*")
         .eq("published", true)
+        .eq("featured", true)
         .order("created_at", { ascending: false })
         .limit(6),
       supabase

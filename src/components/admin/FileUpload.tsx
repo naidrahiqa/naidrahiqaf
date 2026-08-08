@@ -38,8 +38,7 @@ function isImageUrl(url: string): boolean {
 
 function getPreviewUrl(value: string): string {
   if (value.startsWith("http")) return value;
-  const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  return `${base}/storage/v1/object/public/${value}`;
+  return `https://kcensjxxnvoyacepzbqs.supabase.co/storage/v1/object/public/${value}`;
 }
 
 export function FileUpload({
