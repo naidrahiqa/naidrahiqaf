@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin";
+import { dbError } from "@/lib/api";
 import type { ProjectMediaInsert } from "@/lib/types";
 
 const mediaTypes = ["image", "youtube", "drive", "storage"] as const;
@@ -20,7 +21,7 @@ export async function GET(
     .eq("project_id", id)
     .order("sort_order");
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: dbError(error) }, { status: 500 });
   return NextResponse.json(data);
 }
 
@@ -79,7 +80,7 @@ export async function PUT(
     .select("*")
     .eq("project_id", id)
     .order("sort_order");
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: dbError(error) }, { status: 500 });
 
   return NextResponse.json(data);
 }

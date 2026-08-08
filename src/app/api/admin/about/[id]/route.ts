@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin";
 import { pickFields, aboutFields } from "@/lib/admin-fields";
+import { dbError } from "@/lib/api";
 
 export async function PUT(
   request: Request,
@@ -23,7 +24,7 @@ export async function PUT(
     .select()
     .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: dbError(error) }, { status: 500 });
   return NextResponse.json(data);
 }
 
@@ -38,6 +39,6 @@ export async function DELETE(
   const supabase = await createClient();
   const { error } = await supabase.from("about_sections").delete().eq("id", id);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: dbError(error) }, { status: 500 });
   return NextResponse.json({ ok: true });
 }

@@ -2,19 +2,18 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin";
 import { slugify, detectVideoType } from "@/lib/utils";
-import { pickFields, postFields, projectFields, achievementFields } from "@/lib/admin-fields";
+import { dbError } from "@/lib/api";
+import { pickFields, projectFields, achievementFields } from "@/lib/admin-fields";
 
-const entities = ["posts", "projects", "achievements"] as const;
+const entities = ["projects", "achievements"] as const;
 type Entity = (typeof entities)[number];
 
 const allowedFields: Record<Entity, readonly string[]> = {
-  posts: postFields,
   projects: projectFields,
   achievements: achievementFields,
 };
 
 const orderBy: Record<Entity, { column: string; ascending: boolean }> = {
-  posts: { column: "created_at", ascending: false },
   projects: { column: "created_at", ascending: false },
   achievements: { column: "sort_order", ascending: true },
 };
@@ -38,7 +37,7 @@ export async function GET(
     .select("*")
     .order(column, { ascending });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: dbError(error) }, { status: 500 });
   return NextResponse.json(data);
 }
 
@@ -74,6 +73,6 @@ export async function POST(
     .select()
     .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: dbError(error) }, { status: 500 });
   return NextResponse.json(data, { status: 201 });
 }

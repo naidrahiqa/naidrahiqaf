@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { KeyRound, Lock } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
 import { Button, Card, Input, Label } from "@/components/admin/ui";
 
 export default function AdminLoginPage() {
@@ -18,12 +17,13 @@ export default function AdminLoginPage() {
     setLoading(true);
     setError(null);
     try {
-      const supabase = createClient();
-      const { error: authError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
-      if (authError) throw authError;
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error ?? "Login failed");
       router.push("/admin");
       router.refresh();
     } catch (err) {
