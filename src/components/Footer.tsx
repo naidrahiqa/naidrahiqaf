@@ -37,10 +37,6 @@ export default async function Footer() {
         </div>
 
         <div className="flex items-center gap-4 text-xs text-muted">
-          <Link href="/admin" className="transition-colors hover:text-accent">
-            admin
-          </Link>
-          <span className="text-border">·</span>
           <span>© {new Date().getFullYear()} naidrahiqa</span>
         </div>
       </div>
