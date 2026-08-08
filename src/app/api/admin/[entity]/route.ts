@@ -2,9 +2,16 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin";
 import { slugify, detectVideoType } from "@/lib/utils";
+import { pickFields, postFields, projectFields, achievementFields } from "@/lib/admin-fields";
 
 const entities = ["posts", "projects", "achievements"] as const;
 type Entity = (typeof entities)[number];
+
+const allowedFields: Record<Entity, readonly string[]> = {
+  posts: postFields,
+  projects: projectFields,
+  achievements: achievementFields,
+};
 
 const orderBy: Record<Entity, { column: string; ascending: boolean }> = {
   posts: { column: "created_at", ascending: false },
@@ -52,7 +59,8 @@ export async function POST(
     return NextResponse.json({ error: "title is required" }, { status: 400 });
   }
 
-  const payload: Record<string, unknown> = { ...body };
+  const payload = pickFields(body, allowedFields[entity as Entity]);
+  payload.title = body.title;
   if (entity !== "achievements") {
     payload.slug = body.slug?.trim() || slugify(body.title);
     payload.video_type =

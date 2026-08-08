@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin";
+import { pickFields, aboutFields } from "@/lib/admin-fields";
 
 export async function PUT(
   request: Request,
@@ -13,9 +14,11 @@ export async function PUT(
   const body = await request.json().catch(() => ({}));
 
   const supabase = await createClient();
+  const payload = pickFields(body, aboutFields);
+  payload.updated_at = new Date().toISOString();
   const { data, error } = await supabase
     .from("about_sections")
-    .update({ ...body, updated_at: new Date().toISOString() })
+    .update(payload)
     .eq("id", id)
     .select()
     .single();

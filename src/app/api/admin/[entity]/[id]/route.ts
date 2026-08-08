@@ -2,9 +2,16 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin";
 import { slugify, detectVideoType } from "@/lib/utils";
+import { pickFields, postFields, projectFields, achievementFields } from "@/lib/admin-fields";
 
 const entities = ["posts", "projects", "achievements"] as const;
 type Entity = (typeof entities)[number];
+
+const allowedFields: Record<Entity, readonly string[]> = {
+  posts: postFields,
+  projects: projectFields,
+  achievements: achievementFields,
+};
 
 export async function GET(
   _request: Request,
@@ -42,8 +49,7 @@ export async function PUT(
   }
 
   const body = await request.json().catch(() => ({}));
-  const payload: Record<string, unknown> = { ...body };
-  delete payload.id;
+  const payload = pickFields(body, allowedFields[entity as Entity]);
   delete payload.created_at;
   payload.updated_at = new Date().toISOString();
   if (entity !== "achievements") {

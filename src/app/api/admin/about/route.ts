@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin";
+import { pickFields, aboutFields } from "@/lib/admin-fields";
 
 export async function GET() {
   const user = await requireAdmin();
@@ -26,14 +27,11 @@ export async function POST(request: Request) {
   }
 
   const supabase = await createClient();
+  const payload = pickFields(body, aboutFields);
+  payload.sort_order = body.sort_order ?? 99;
   const { data, error } = await supabase
     .from("about_sections")
-    .insert({
-      key: body.key,
-      heading: body.heading,
-      content: body.content ?? "",
-      sort_order: body.sort_order ?? 99,
-    })
+    .insert(payload)
     .select()
     .single();
 

@@ -41,6 +41,27 @@ function getPreviewUrl(value: string): string {
   return `https://kcensjxxnvoyacepzbqs.supabase.co/storage/v1/object/public/media/${value.replace(/^media\//, "")}`;
 }
 
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
+const MIME_ALLOWED = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "application/pdf",
+  "video/mp4",
+]);
+
+function validateFile(file: File): string | null {
+  if (file.size > MAX_FILE_SIZE) {
+    return `File too large (max 10MB) — ${(file.size / 1024 / 1024).toFixed(1)}MB`;
+  }
+  if (!MIME_ALLOWED.has(file.type)) {
+    return `Unsupported file type: ${file.type || "unknown"}`;
+  }
+  return null;
+}
+
 export function FileUpload({
   label,
   value,
@@ -59,6 +80,11 @@ export function FileUpload({
 
   async function handleFile(file: File | undefined) {
     if (!file) return;
+    const validationError = validateFile(file);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
     setUploading(true);
     setError(null);
     try {

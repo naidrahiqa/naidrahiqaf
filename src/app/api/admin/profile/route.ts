@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin";
+import { pickFields, profileFields } from "@/lib/admin-fields";
 
 export async function GET() {
   const user = await requireAdmin();
@@ -24,9 +25,11 @@ export async function PUT(request: Request) {
   const body = await request.json().catch(() => ({}));
 
   const supabase = await createClient();
+  const payload = pickFields(body, profileFields);
+  payload.updated_at = new Date().toISOString();
   const { data, error } = await supabase
     .from("profiles")
-    .update({ ...body, id: 1, updated_at: new Date().toISOString() })
+    .update(payload)
     .eq("id", 1)
     .select()
     .single();

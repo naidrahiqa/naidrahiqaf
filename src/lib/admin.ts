@@ -10,7 +10,7 @@ export async function requireAdmin(): Promise<User | null> {
   if (!user) return null;
 
   const adminEmail = process.env.ADMIN_EMAIL;
-  if (adminEmail && user.email !== adminEmail) return null;
+  if (!adminEmail || user.email !== adminEmail) return null;
 
   return user;
 }
