@@ -25,6 +25,14 @@ function isPdfUrl(url: string): boolean {
   return /\.pdf(\?.*)?$/i.test(url);
 }
 
+function toDirectUrl(url: string): string {
+  const match = url.match(/drive\.google\.com\/file\/d\/([^/]+)\//);
+  if (match) return `https://lh3.googleusercontent.com/d/${match[1]}=s0`;
+  const match2 = url.match(/[?&]id=([^&]+)/);
+  if (match2 && url.includes("drive.google.com")) return `https://lh3.googleusercontent.com/d/${match2[1]}=s0`;
+  return url;
+}
+
 function isImageUrl(url: string): boolean {
   if (isLocalPath(url)) return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url);
   if (/\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i.test(url)) return true;
@@ -52,12 +60,10 @@ export function AchievementFilter({ items }: { items: Achievement[] }) {
   function renderThumbnail(a: Achievement) {
     if (!a.certificate_url) return null;
     
-    const directUrl = isLocalPath(a.certificate_url) 
+    const viewUrl = isLocalPath(a.certificate_url) 
       ? getSupabaseUrl(a.certificate_url) 
-      : a.certificate_url.includes("lh3.googleusercontent.com/d/")
-        ? a.certificate_url
-        : a.certificate_url;
-    const viewUrl = getViewUrl(a.certificate_url, directUrl);
+      : a.certificate_url;
+    const directUrl = toDirectUrl(viewUrl);
 
     if (isPdfUrl(a.certificate_url)) {
       return (
