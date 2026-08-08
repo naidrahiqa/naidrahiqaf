@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowDown, ArrowUp, ImagePlus, Plus, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, ImagePlus, Plus, Trash2, Play, FileText } from "lucide-react";
 import type { ProjectMediaType } from "@/lib/types";
-import { cn, resolveImageUrl } from "@/lib/utils";
+import { cn, resolveImageUrl, detectVideoType } from "@/lib/utils";
 import { Input, Label, Select } from "@/components/admin/ui";
 import { FileUpload } from "@/components/admin/FileUpload";
 
@@ -13,12 +13,60 @@ export interface MediaDraft {
   caption: string;
 }
 
-const typeOptions: { value: ProjectMediaType; label: string }[] = [
-  { value: "image", label: "image" },
-  { value: "youtube", label: "youtube" },
-  { value: "drive", label: "google drive" },
-  { value: "storage", label: "storage video" },
+const typeOptions: { value: ProjectMediaType; label: string; hint: string }[] = [
+  { value: "image", label: "Image", hint: "Photo or screenshot" },
+  { value: "youtube", label: "YouTube", hint: "youtube.com or youtu.be" },
+  { value: "drive", label: "Google Drive", hint: "drive.google.com/file/d/..." },
+  { value: "storage", label: "Storage Video", hint: "MP4 upload to Supabase Storage" },
 ];
+
+function getYouTubeId(url: string): string | null {
+  const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?#]+)/);
+  return m ? m[1] : null;
+}
+
+function getDriveId(url: string): string | null {
+  const m = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+  if (m) return m[1];
+  const m2 = url.match(/[?&]id=([^&]+)/);
+  if (m2 && url.includes("drive.google.com")) return m2[1];
+  return null;
+}
+
+function VideoPreview({ url, type }: { url: string; type: string }) {
+  if (type === "youtube") {
+    const id = getYouTubeId(url);
+    if (!id) return null;
+    return (
+      <div className="mt-3 overflow-hidden rounded-lg border border-border bg-background">
+        <img
+          src={`https://img.youtube.com/vi/${id}/mqdefault.jpg`}
+          alt="YouTube preview"
+          className="w-full object-cover"
+        />
+      </div>
+    );
+  }
+
+  if (type === "drive") {
+    const id = getDriveId(url);
+    if (!id) return null;
+    return (
+      <div className="mt-3 overflow-hidden rounded-lg border border-border bg-background">
+        <img
+          src={`https://lh3.googleusercontent.com/d/${id}=w400`}
+          alt="Drive preview"
+          className="w-full object-cover"
+          onError={(e) => {
+            (e.target as HTMLImageElement).style.display = "none";
+          }}
+        />
+      </div>
+    );
+  }
+
+  return null;
+}
 
 export function MediaGallery({
   items,
@@ -53,24 +101,24 @@ export function MediaGallery({
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <p className="font-mono text-xs text-muted">
-          media gallery — photos & videos showcase
+        <p className="text-xs text-muted">
+          {items.length} {items.length === 1 ? "item" : "items"}
         </p>
         <button
           type="button"
           onClick={addImage}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-dashed border-border bg-surface-2 px-3 py-1.5 font-mono text-[11px] text-muted transition-colors hover:border-accent/50 hover:text-accent"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-dashed border-border bg-surface-2 px-3 py-1.5 text-[11px] text-muted transition-colors hover:border-accent/50 hover:text-accent"
         >
           <Plus size={12} />
-          add item
+          Add Item
         </button>
       </div>
 
       {error && <p className="text-xs text-danger">{error}</p>}
 
       {items.length === 0 && (
-        <p className="rounded-lg border border-dashed border-border p-4 text-center font-mono text-xs text-muted">
-          no media yet — add photos or videos
+        <p className="rounded-lg border border-dashed border-border p-4 text-center text-xs text-muted">
+          No media yet — add photos or videos to showcase
         </p>
       )}
 
@@ -81,9 +129,15 @@ export function MediaGallery({
             className="rounded-xl border border-border bg-surface-2 p-4"
           >
             <div className="mb-3 flex items-center justify-between gap-2">
-              <p className="font-mono text-[11px] text-muted">
-                #{index + 1}
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="text-[11px] font-medium text-muted">
+                  #{index + 1}
+                </p>
+                {item.media_type === "image" && <ImagePlus size={12} className="text-muted" />}
+                {(item.media_type === "youtube" || item.media_type === "drive" || item.media_type === "storage") && (
+                  <Play size={12} className="text-muted" />
+                )}
+              </div>
               <div className="flex gap-1">
                 <button
                   type="button"
@@ -116,16 +170,28 @@ export function MediaGallery({
 
             <div className="grid gap-3 sm:grid-cols-3">
               <div>
-                <Label htmlFor={`media-type-${index}`}>type</Label>
+                <Label htmlFor={`media-type-${index}`}>Type</Label>
                 <Select
                   id={`media-type-${index}`}
                   value={item.media_type}
-                  onChange={(e) =>
-                    update(index, {
-                      media_type: e.target.value as ProjectMediaType,
-                      url: "",
-                    })
-                  }
+                  onChange={(e) => {
+                    const newType = e.target.value as ProjectMediaType;
+                    const patch: Partial<MediaDraft> = { media_type: newType };
+                    // Don't clear URL if switching between image types or if URL looks like the new type
+                    if (item.url) {
+                      const detected = detectVideoType(item.url);
+                      if (newType === "image" && !detected) {
+                        // Keep URL — might be an image
+                      } else if (newType !== "image" && detected && detected === newType) {
+                        // Keep URL — it matches
+                      } else if (newType === "image" && item.media_type !== "image") {
+                        // Keep URL — user might paste an image URL
+                      } else {
+                        patch.url = "";
+                      }
+                    }
+                    update(index, patch);
+                  }}
                 >
                   {typeOptions.map((t) => (
                     <option key={t.value} value={t.value}>
@@ -133,14 +199,17 @@ export function MediaGallery({
                     </option>
                   ))}
                 </Select>
+                <p className="mt-0.5 text-[10px] text-muted">
+                  {typeOptions.find((t) => t.value === item.media_type)?.hint}
+                </p>
               </div>
               <div className="sm:col-span-2">
                 <Label htmlFor={`media-url-${index}`}>
                   {item.media_type === "image"
-                    ? "image url (or upload)"
+                    ? "Image URL (or upload below)"
                     : item.media_type === "storage"
-                      ? "video file (upload)"
-                      : "video url"}
+                      ? "Video File"
+                      : "Video URL"}
                 </Label>
                 {item.media_type === "image" || item.media_type === "storage" ? (
                   <FileUpload
@@ -169,15 +238,16 @@ export function MediaGallery({
             </div>
 
             <div className="mt-3">
-              <Label htmlFor={`media-caption-${index}`}>caption</Label>
+              <Label htmlFor={`media-caption-${index}`}>Caption</Label>
               <Input
                 id={`media-caption-${index}`}
                 value={item.caption}
                 onChange={(e) => update(index, { caption: e.target.value })}
-                placeholder="optional caption"
+                placeholder="Optional — shown below the media"
               />
             </div>
 
+            {/* Image preview */}
             {item.media_type === "image" && item.url && (
               <div className="mt-3 overflow-hidden rounded-lg border border-border bg-background">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -185,8 +255,16 @@ export function MediaGallery({
                   src={resolveImageUrl(item.url)}
                   alt="preview"
                   className={cn("max-h-40 w-full object-contain")}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = "none";
+                  }}
                 />
               </div>
+            )}
+
+            {/* Video preview */}
+            {item.media_type !== "image" && item.url && (
+              <VideoPreview url={item.url} type={item.media_type} />
             )}
           </div>
         ))}
@@ -195,10 +273,10 @@ export function MediaGallery({
       <button
         type="button"
         onClick={addImage}
-        className="inline-flex w-fit items-center gap-1.5 rounded-lg border border-dashed border-border bg-surface-2 px-3 py-2 font-mono text-[11px] text-muted transition-colors hover:border-accent/50 hover:text-accent"
+        className="inline-flex w-fit items-center gap-1.5 rounded-lg border border-dashed border-border bg-surface-2 px-3 py-2 text-[11px] text-muted transition-colors hover:border-accent/50 hover:text-accent"
       >
         <ImagePlus size={13} />
-        add media item
+        Add Media Item
       </button>
     </div>
   );

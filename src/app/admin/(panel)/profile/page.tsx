@@ -10,13 +10,14 @@ import {
   TextArea,
 } from "@/components/admin/ui";
 import { FileUpload } from "@/components/admin/FileUpload";
+import { useToast } from "@/components/admin/Toast";
 
 export default function ProfileEditorPage() {
+  const { toast } = useToast();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     fetch("/api/admin/profile")
@@ -32,7 +33,6 @@ export default function ProfileEditorPage() {
     if (!profile) return;
     setSaving(true);
     setError(null);
-    setSaved(false);
     try {
       const res = await fetch("/api/admin/profile", {
         method: "PUT",
@@ -49,7 +49,7 @@ export default function ProfileEditorPage() {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error ?? "Save failed");
       }
-      setSaved(true);
+      toast("success", "Profile saved");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Save failed");
     } finally {
@@ -73,6 +73,9 @@ export default function ProfileEditorPage() {
     <div className="flex max-w-xl flex-col gap-6">
       <header>
         <h1 className="text-2xl font-bold tracking-tight">Profile</h1>
+        <p className="mt-2 text-sm text-muted">
+          Your personal information shown on the homepage and about page.
+        </p>
       </header>
 
       {error && (
@@ -83,7 +86,7 @@ export default function ProfileEditorPage() {
 
       <Card className="flex flex-col gap-4">
         <div>
-          <Label htmlFor="name">name</Label>
+          <Label htmlFor="name">Full Name</Label>
           <Input
             id="name"
             value={profile.name}
@@ -91,9 +94,12 @@ export default function ProfileEditorPage() {
               setProfile({ ...profile, name: e.target.value })
             }
           />
+          <p className="mt-0.5 text-[10px] text-muted">
+            Displayed in the hero section and page title (e.g. "FAQIH ARDIAN SYAH")
+          </p>
         </div>
         <div>
-          <Label htmlFor="nickname">nickname</Label>
+          <Label htmlFor="nickname">Nickname</Label>
           <Input
             id="nickname"
             value={profile.nickname}
@@ -101,20 +107,26 @@ export default function ProfileEditorPage() {
               setProfile({ ...profile, nickname: e.target.value })
             }
           />
+          <p className="mt-0.5 text-[10px] text-muted">
+            Shown as "Naidrahiqa" in the UI — your casual/brand name
+          </p>
         </div>
         <div>
-          <Label htmlFor="tagline">tagline</Label>
+          <Label htmlFor="tagline">Tagline</Label>
           <Input
             id="tagline"
             value={profile.tagline}
             onChange={(e) =>
               setProfile({ ...profile, tagline: e.target.value })
             }
-            placeholder="TKJ Student | Kernel Developer | IoT Builder | CyberSecurity Enthusiast"
+            placeholder="TKJ Student | Kernel Developer | IoT Builder"
           />
+          <p className="mt-0.5 text-[10px] text-muted">
+            Pipe-separated roles shown below your name on the homepage
+          </p>
         </div>
         <div>
-          <Label htmlFor="hero">hero description</Label>
+          <Label htmlFor="hero">Hero Description</Label>
           <TextArea
             id="hero"
             rows={3}
@@ -123,9 +135,12 @@ export default function ProfileEditorPage() {
               setProfile({ ...profile, hero_description: e.target.value })
             }
           />
+          <p className="mt-0.5 text-[10px] text-muted">
+            Short bio shown in the hero section of the homepage
+          </p>
         </div>
         <FileUpload
-          label="profile image"
+          label="Profile Image"
           value={profile.profile_image}
           onChange={(path) => setProfile({ ...profile, profile_image: path })}
           accept="image/*"
@@ -134,9 +149,8 @@ export default function ProfileEditorPage() {
 
       <div className="flex items-center gap-3">
         <Button type="button" onClick={save} disabled={saving}>
-          {saving ? "saving..." : "Save profile"}
+          {saving ? "Saving..." : "Save Profile"}
         </Button>
-        {saved && <span className="text-xs text-accent">Saved</span>}
       </div>
     </div>
   );

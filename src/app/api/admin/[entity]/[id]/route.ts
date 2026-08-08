@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin";
-import { slugify, detectVideoType } from "@/lib/utils";
+import { slugify, detectVideoType, getStoragePath } from "@/lib/utils";
 import { dbError } from "@/lib/api";
 import { pickFields, projectFields, achievementFields } from "@/lib/admin-fields";
 
@@ -69,6 +69,18 @@ export async function PUT(
   return NextResponse.json(data);
 }
 
+async function cleanupStorageFiles(supabase: Awaited<ReturnType<typeof createClient>>, urls: (string | null)[]) {
+  const paths: string[] = [];
+  for (const url of urls) {
+    if (!url) continue;
+    const path = getStoragePath(url);
+    if (path) paths.push(path);
+  }
+  if (paths.length > 0) {
+    await supabase.storage.from("media").remove(paths);
+  }
+}
+
 export async function DELETE(
   _request: Request,
   { params }: RouteContext<"/api/admin/[entity]/[id]">
@@ -82,6 +94,27 @@ export async function DELETE(
   }
 
   const supabase = await createClient();
+
+  if (entity === "projects") {
+    const { data: project } = await supabase
+      .from("projects")
+      .select("cover_image, video_url")
+      .eq("id", id)
+      .single();
+
+    const { data: media } = await supabase
+      .from("project_media")
+      .select("url")
+      .eq("project_id", id);
+
+    const urls = [
+      project?.cover_image,
+      project?.video_url,
+      ...(media?.map((m) => m.url) ?? []),
+    ];
+    await cleanupStorageFiles(supabase, urls);
+  }
+
   const { error } = await supabase.from(entity).delete().eq("id", id);
 
   if (error) return NextResponse.json({ error: dbError(error) }, { status: 500 });

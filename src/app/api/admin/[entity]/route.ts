@@ -67,6 +67,22 @@ export async function POST(
   }
 
   const supabase = await createClient();
+
+  if (entity === "projects" && payload.slug) {
+    const { data: existing } = await supabase
+      .from("projects")
+      .select("id")
+      .eq("slug", payload.slug)
+      .limit(1)
+      .maybeSingle();
+    if (existing) {
+      return NextResponse.json(
+        { error: "A project with this slug already exists" },
+        { status: 409 }
+      );
+    }
+  }
+
   const { data, error } = await supabase
     .from(entity)
     .insert(payload)

@@ -179,7 +179,7 @@ export default async function AdminProjectsPage({
                     >
                       Edit
                     </Link>
-                    <DeleteButton entity="projects" id={project.id} />
+                    <DeleteButton entity="projects" id={project.id} name={project.title} />
                   </div>
                 </td>
               </tr>
@@ -242,7 +242,7 @@ export default async function AdminProjectsPage({
               >
                 Edit
               </Link>
-              <DeleteButton entity="projects" id={project.id} />
+              <DeleteButton entity="projects" id={project.id} name={project.title} />
             </div>
           </div>
         ))}

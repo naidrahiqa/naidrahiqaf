@@ -10,8 +10,10 @@ import {
   Label,
   TextArea,
 } from "@/components/admin/ui";
+import { useToast } from "@/components/admin/Toast";
 
 export default function AboutEditorPage() {
+  const { toast } = useToast();
   const [sections, setSections] = useState<AboutSection[]>([]);
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState<string | null>(null);
@@ -49,6 +51,7 @@ export default function AboutEditorPage() {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error ?? "Save failed");
       }
+      toast("success", "Section saved");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Save failed");
     } finally {
@@ -57,7 +60,9 @@ export default function AboutEditorPage() {
   }
 
   async function deleteSection(id: string) {
-    if (!window.confirm("Delete this section?")) return;
+    const section = sections.find((s) => s.id === id);
+    const label = section?.heading ?? "this section";
+    if (!window.confirm(`Delete "${label}"? This cannot be undone.`)) return;
     setDeletingId(id);
     setError(null);
     try {
@@ -67,6 +72,7 @@ export default function AboutEditorPage() {
         throw new Error(data.error ?? "Delete failed");
       }
       setSections((prev) => prev.filter((s) => s.id !== id));
+      toast("success", "Section deleted");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Delete failed");
     } finally {
@@ -92,6 +98,7 @@ export default function AboutEditorPage() {
       if (!res.ok) throw new Error(data.error ?? "Create failed");
       setSections((prev) => [...prev, data]);
       setNewSection({ key: "", heading: "" });
+      toast("success", "Section created");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Create failed");
     }
@@ -112,8 +119,7 @@ export default function AboutEditorPage() {
       <header>
         <h1 className="text-2xl font-bold tracking-tight">About Sections</h1>
         <p className="mt-2 text-sm text-muted">
-          Each section renders on /about with its heading. Content supports
-          markdown.
+          Each section renders on /about with its heading. Content supports markdown.
         </p>
       </header>
 
@@ -128,24 +134,30 @@ export default function AboutEditorPage() {
           <Card key={section.id} className="flex flex-col gap-4">
             <div className="grid gap-4 sm:grid-cols-[1fr_120px]">
               <div>
-                <Label htmlFor={`heading-${section.id}`}>heading</Label>
+                <Label htmlFor={`heading-${section.id}`}>Heading</Label>
                 <Input
                   id={`heading-${section.id}`}
                   value={section.heading}
                   onChange={(e) => update(section.id, { heading: e.target.value })}
                 />
+                <p className="mt-0.5 text-[10px] text-muted">
+                  Displayed as the section title on /about
+                </p>
               </div>
               <div>
-                <Label htmlFor={`key-${section.id}`}>key</Label>
+                <Label htmlFor={`key-${section.id}`}>Key</Label>
                 <Input
                   id={`key-${section.id}`}
                   value={section.key}
                   onChange={(e) => update(section.id, { key: e.target.value })}
                 />
+                <p className="mt-0.5 text-[10px] text-muted">
+                  Internal identifier (no spaces)
+                </p>
               </div>
             </div>
             <div>
-              <Label htmlFor={`content-${section.id}`}>content (markdown)</Label>
+              <Label htmlFor={`content-${section.id}`}>Content (Markdown)</Label>
               <TextArea
                 id={`content-${section.id}`}
                 rows={6}
@@ -155,7 +167,7 @@ export default function AboutEditorPage() {
             </div>
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="w-28">
-                <Label htmlFor={`sort-${section.id}`}>sort order</Label>
+                <Label htmlFor={`sort-${section.id}`}>Sort Order</Label>
                 <Input
                   id={`sort-${section.id}`}
                   type="number"
@@ -171,7 +183,7 @@ export default function AboutEditorPage() {
                   onClick={() => saveSection(section.id)}
                   disabled={savingId === section.id}
                 >
-                  {savingId === section.id ? "saving..." : "Save"}
+                  {savingId === section.id ? "Saving..." : "Save"}
                 </Button>
                 <Button
                   type="button"
@@ -191,7 +203,7 @@ export default function AboutEditorPage() {
         <p className="text-sm font-semibold">Add Section</p>
         <form onSubmit={createSection} className="flex flex-col gap-4 sm:flex-row sm:items-end">
           <div className="flex-1">
-            <Label htmlFor="new-heading">heading</Label>
+            <Label htmlFor="new-heading">Heading</Label>
             <Input
               id="new-heading"
               required
@@ -199,11 +211,11 @@ export default function AboutEditorPage() {
               onChange={(e) =>
                 setNewSection((prev) => ({ ...prev, heading: e.target.value }))
               }
-              placeholder="Projects I Admire"
+              placeholder="e.g. Projects I Admire"
             />
           </div>
           <div className="flex-1">
-            <Label htmlFor="new-key">key</Label>
+            <Label htmlFor="new-key">Key</Label>
             <Input
               id="new-key"
               required
@@ -211,7 +223,7 @@ export default function AboutEditorPage() {
               onChange={(e) =>
                 setNewSection((prev) => ({ ...prev, key: e.target.value }))
               }
-              placeholder="projects_i_admire"
+              placeholder="e.g. projects_i_admire"
             />
           </div>
           <Button type="submit" className="sm:mb-0">

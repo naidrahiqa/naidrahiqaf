@@ -10,15 +10,16 @@ import {
   Label,
   Select,
 } from "@/components/admin/ui";
+import { useToast } from "@/components/admin/Toast";
 
 const platforms = ["email", "github", "instagram", "linkedin", "telegram", "whatsapp", "discord", "threads"];
 
 export default function ContactsEditorPage() {
+  const { toast } = useToast();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     fetch("/api/admin/contacts")
@@ -31,14 +32,12 @@ export default function ContactsEditorPage() {
   }, []);
 
   function update(id: string, patch: Partial<Contact>) {
-    setSaved(false);
     setContacts((prev) =>
       prev.map((c) => (c.id === id ? { ...c, ...patch } : c))
     );
   }
 
   function addContact() {
-    setSaved(false);
     const newId = `new-${Date.now()}`;
     setContacts((prev) => [
       ...prev,
@@ -53,14 +52,12 @@ export default function ContactsEditorPage() {
   }
 
   function removeContact(id: string) {
-    setSaved(false);
     setContacts((prev) => prev.filter((c) => c.id !== id));
   }
 
   async function saveAll() {
     setSaving(true);
     setError(null);
-    setSaved(false);
     try {
       const res = await fetch("/api/admin/contacts", {
         method: "PUT",
@@ -79,7 +76,7 @@ export default function ContactsEditorPage() {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error ?? "Save failed");
       }
-      setSaved(true);
+      toast("success", "Contacts saved");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Save failed");
     } finally {
@@ -114,7 +111,7 @@ export default function ContactsEditorPage() {
                 <BrandIcon platform={c.platform} size={18} />
               </span>
               <div className="flex-1">
-                <Label htmlFor={`platform-${c.id}`}>platform</Label>
+                <Label htmlFor={`platform-${c.id}`}>Platform</Label>
                 <Select
                   id={`platform-${c.id}`}
                   value={c.platform}
@@ -127,25 +124,31 @@ export default function ContactsEditorPage() {
               </div>
             </div>
             <div className="flex-1">
-              <Label htmlFor={`handle-${c.id}`}>handle</Label>
+              <Label htmlFor={`handle-${c.id}`}>Handle</Label>
               <Input
                 id={`handle-${c.id}`}
                 value={c.handle}
                 onChange={(e) => update(c.id, { handle: e.target.value })}
-                placeholder={c.platform === "email" ? "email@example.com" : ""}
+                placeholder={c.platform === "email" ? "email@example.com" : "username"}
               />
+              <p className="mt-0.5 text-[10px] text-muted">
+                {c.platform === "email" ? "Your email address" : "Display name or username"}
+              </p>
             </div>
             <div className="flex-1">
-              <Label htmlFor={`url-${c.id}`}>url</Label>
+              <Label htmlFor={`url-${c.id}`}>URL</Label>
               <Input
                 id={`url-${c.id}`}
                 value={c.url}
                 onChange={(e) => update(c.id, { url: e.target.value })}
-                placeholder={c.platform === "email" ? "mailto:email@example.com" : ""}
+                placeholder={c.platform === "email" ? "mailto:email@example.com" : `https://${c.platform}.com/...`}
               />
+              <p className="mt-0.5 text-[10px] text-muted">
+                Full link including https://
+              </p>
             </div>
             <div className="w-20">
-              <Label htmlFor={`sort-${c.id}`}>sort</Label>
+              <Label htmlFor={`sort-${c.id}`}>Sort</Label>
               <Input
                 id={`sort-${c.id}`}
                 type="number"
@@ -172,11 +175,8 @@ export default function ContactsEditorPage() {
           + Add Contact
         </Button>
         <Button type="button" onClick={saveAll} disabled={saving}>
-          {saving ? "saving..." : "Save all"}
+          {saving ? "Saving..." : "Save All"}
         </Button>
-        {saved && (
-          <span className="text-xs text-accent">Saved</span>
-        )}
       </div>
     </div>
   );

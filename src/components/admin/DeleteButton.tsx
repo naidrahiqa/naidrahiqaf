@@ -7,15 +7,18 @@ import { Trash2 } from "lucide-react";
 export function DeleteButton({
   entity,
   id,
+  name,
 }: {
   entity: "posts" | "projects" | "achievements";
   id: string;
+  name?: string;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
 
   async function handleDelete() {
-    if (!window.confirm("Delete this item? This cannot be undone.")) return;
+    const label = name ? `"${name}"` : "this item";
+    if (!window.confirm(`Delete ${label}? This cannot be undone.`)) return;
     setBusy(true);
     try {
       const res = await fetch(`/api/admin/${entity}/${id}`, {

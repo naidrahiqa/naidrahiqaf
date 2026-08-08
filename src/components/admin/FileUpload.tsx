@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { UploadCloud, X, Link as LinkIcon, Check } from "lucide-react";
+import { UploadCloud, X, Link as LinkIcon, Check, FileVideo, Image } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 function convertGoogleDriveUrl(url: string): string {
@@ -21,12 +21,6 @@ function getGoogleDriveFileId(url: string): string | null {
   const match2 = url.match(/[?&]id=([^&]+)/);
   if (match2 && url.includes("drive.google.com")) return match2[1];
   return null;
-}
-
-function getGoogleDriveViewUrl(url: string): string {
-  const id = getGoogleDriveFileId(url);
-  if (id) return `https://drive.google.com/file/d/${id}/view`;
-  return url;
 }
 
 function isGoogleDriveUrl(url: string): boolean {
@@ -64,6 +58,12 @@ function validateFile(file: File): string | null {
     return `Unsupported file type: ${file.type || "unknown"}`;
   }
   return null;
+}
+
+function formatAcceptHint(accept: string): string {
+  if (accept.includes("video")) return "MP4, WebM, OGG (max 10MB)";
+  if (accept.includes("pdf")) return "Images or PDF (max 10MB)";
+  return "JPG, PNG, WebP, GIF (max 10MB)";
 }
 
 export function FileUpload({
@@ -116,9 +116,9 @@ export function FileUpload({
 
   return (
     <div>
-      <p className="mb-1.5 font-mono text-xs text-muted">{label}</p>
+      {label && <p className="mb-1.5 text-xs font-medium text-foreground">{label}</p>}
 
-      <div className="mb-3 flex gap-2">
+      <div className="mb-2 flex gap-2">
         <button
           type="button"
           onClick={() => setMode("upload")}
@@ -145,10 +145,14 @@ export function FileUpload({
         </button>
       </div>
 
+      <p className="mb-2 text-[10px] text-muted">
+        {formatAcceptHint(accept)}
+      </p>
+
       {mode === "upload" ? (
         <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-border bg-surface-2 px-4 py-2 text-sm text-muted transition-colors hover:border-accent/50 hover:text-accent">
           <UploadCloud size={15} />
-          {uploading ? "uploading..." : "upload file"}
+          {uploading ? "Uploading..." : "Choose file or drag here"}
           <input
             type="file"
             className="hidden"
@@ -188,8 +192,12 @@ export function FileUpload({
               className="h-16 w-16 rounded-lg border border-border object-cover"
             />
           ) : (
-            <span className="rounded-lg border border-border bg-surface-2 px-3 py-1.5 text-xs text-muted">
-              {value.includes("drive.google.com") ? "Google Drive file" : value.split("/").pop()}
+            <span className="flex items-center gap-1.5 rounded-lg border border-border bg-surface-2 px-3 py-1.5 text-xs text-muted">
+              {value.includes("drive.google.com") ? (
+                <><FileVideo size={12} /> Google Drive file</>
+              ) : (
+                <><Image size={12} /> {value.split("/").pop()}</>
+              )}
             </span>
           )}
           <button
