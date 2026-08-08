@@ -38,7 +38,7 @@ function isImageUrl(url: string): boolean {
 
 function getPreviewUrl(value: string): string {
   if (value.startsWith("http")) return value;
-  return `https://kcensjxxnvoyacepzbqs.supabase.co/storage/v1/object/public/${value}`;
+  return `https://kcensjxxnvoyacepzbqs.supabase.co/storage/v1/object/public/media/${value.replace(/^media\//, "")}`;
 }
 
 export function FileUpload({
@@ -64,7 +64,7 @@ export function FileUpload({
     try {
       const supabase = createClient();
       const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
-      const path = `media/${Date.now()}-${safeName}`;
+      const path = `${Date.now()}-${safeName}`;
       const { error: uploadError } = await supabase.storage
         .from("media")
         .upload(path, file, { upsert: false });

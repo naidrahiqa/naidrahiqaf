@@ -40,7 +40,7 @@ function getViewUrl(certificateUrl: string, directUrl: string): string {
 
 function getSupabaseUrl(path: string): string {
   const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  return `${base}/storage/v1/object/public/${path}`;
+  return `${base}/storage/v1/object/public/media/${path.replace(/^media\//, "")}`;
 }
 
 export function AchievementFilter({ items }: { items: Achievement[] }) {
