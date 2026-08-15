@@ -24,6 +24,7 @@ export const projectFields = [
   "link",
   "published",
   "featured",
+  "sort_order",
 ] as const;
 
 export const achievementFields = [
@@ -33,6 +34,15 @@ export const achievementFields = [
   "year",
   "description",
   "certificate_url",
+  "sort_order",
+] as const;
+
+export const nowPlayingFields = [
+  "title",
+  "artist",
+  "album",
+  "art_url",
+  "link",
   "sort_order",
 ] as const;
 

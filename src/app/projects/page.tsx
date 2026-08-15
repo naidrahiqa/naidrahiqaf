@@ -16,7 +16,7 @@ export default async function ProjectsPage() {
     .from("projects")
     .select("*")
     .eq("published", true)
-    .order("created_at", { ascending: false });
+    .order("sort_order", { ascending: true });
 
   const all = (projects ?? []) as Project[];
   const school = all.filter((p) => p.category === "school");

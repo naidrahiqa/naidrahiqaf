@@ -3,19 +3,21 @@ import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin";
 import { slugify, detectVideoType } from "@/lib/utils";
 import { dbError } from "@/lib/api";
-import { pickFields, projectFields, achievementFields } from "@/lib/admin-fields";
+import { pickFields, projectFields, achievementFields, nowPlayingFields } from "@/lib/admin-fields";
 
-const entities = ["projects", "achievements"] as const;
+const entities = ["projects", "achievements", "now_playing"] as const;
 type Entity = (typeof entities)[number];
 
 const allowedFields: Record<Entity, readonly string[]> = {
   projects: projectFields,
   achievements: achievementFields,
+  now_playing: nowPlayingFields,
 };
 
 const orderBy: Record<Entity, { column: string; ascending: boolean }> = {
-  projects: { column: "created_at", ascending: false },
+  projects: { column: "sort_order", ascending: true },
   achievements: { column: "sort_order", ascending: true },
+  now_playing: { column: "sort_order", ascending: true },
 };
 
 export async function GET(
@@ -60,13 +62,23 @@ export async function POST(
 
   const payload = pickFields(body, allowedFields[entity as Entity]);
   payload.title = body.title;
-  if (entity !== "achievements") {
+  if (entity === "projects") {
     payload.slug = body.slug?.trim() || slugify(body.title);
     payload.video_type =
       body.video_type ?? detectVideoType(body.video_url ?? null);
   }
 
   const supabase = await createClient();
+
+  if (entity === "projects") {
+    const { data: maxRow } = await supabase
+      .from("projects")
+      .select("sort_order")
+      .order("sort_order", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    payload.sort_order = (maxRow?.sort_order ?? 0) + 1;
+  }
 
   if (entity === "projects" && payload.slug) {
     const { data: existing } = await supabase

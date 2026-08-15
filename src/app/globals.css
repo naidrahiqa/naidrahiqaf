@@ -5,46 +5,50 @@
 
 :root {
   color-scheme: light;
-  --background: #fff7fa;
-  --surface: #ffffff;
-  --surface-2: #fdebf2;
-  --border: rgba(255, 84, 143, 0.18);
-  --border-hover: rgba(255, 84, 143, 0.45);
-  --foreground: #2b0a18;
-  --muted: #9a6b7f;
-  --accent: #ff548f;
-  --accent-hover: #ff6b9e;
-  --accent-2: #8b5cf6;
-  --on-accent: #2b0a18;
-  --danger: #e5484d;
-  --gold: #b8a023;
-  --glow: rgba(255, 84, 143, 0.14);
-  --glow-strong: rgba(255, 84, 143, 0.24);
-  --glass-bg: rgba(255, 255, 255, 0.75);
-  --glass-border: rgba(255, 84, 143, 0.14);
-  --shadow-color: #ffd3e2;
+  --background: #f6f4f9;
+  --surface: #eae4f2;
+  --surface-2: #f2eef8;
+  --border: rgba(74, 62, 86, 0.14);
+  --border-hover: rgba(74, 62, 86, 0.32);
+  --foreground: #4a3e56;
+  --muted: #8a7e97;
+  --accent: #c76bac;
+  --accent-hover: #ffbcd9;
+  --accent-fill: #ffc8dd;
+  --accent-2: #3fa597;
+  --accent-2-fill: #a2e8dd;
+  --on-accent: #4a3e56;
+  --danger: #e06a78;
+  --gold: #c9a24b;
+  --glow: rgba(255, 200, 221, 0.45);
+  --glow-strong: rgba(162, 232, 221, 0.38);
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-border: rgba(255, 200, 221, 0.45);
+  --shadow-color: rgba(74, 62, 86, 0.14);
 }
 
 .dark {
   color-scheme: dark;
-  --background: #150a12;
-  --surface: #241019;
-  --surface-2: #351427;
-  --border: rgba(255, 84, 143, 0.22);
-  --border-hover: rgba(255, 132, 177, 0.5);
-  --foreground: #ffeaf3;
-  --muted: #c9a3b3;
-  --accent: #ff6ba3;
-  --accent-hover: #ff82b0;
-  --accent-2: #b99bff;
-  --on-accent: #2b0a18;
-  --danger: #ff8698;
-  --gold: #e8c547;
-  --glow: rgba(255, 107, 163, 0.16);
-  --glow-strong: rgba(255, 107, 163, 0.28);
-  --glass-bg: rgba(36, 16, 25, 0.65);
-  --glass-border: rgba(255, 144, 177, 0.16);
-  --shadow-color: #4d1f31;
+  --background: #1e1b2e;
+  --surface: #2a2540;
+  --surface-2: #342e4e;
+  --border: rgba(234, 228, 242, 0.14);
+  --border-hover: rgba(234, 228, 242, 0.32);
+  --foreground: #ede7f5;
+  --muted: #a99fbc;
+  --accent: #ffb3d6;
+  --accent-hover: #ffc8dd;
+  --accent-fill: #ffc8dd;
+  --accent-2: #8fe3d6;
+  --accent-2-fill: #a2e8dd;
+  --on-accent: #4a3e56;
+  --danger: #ff9aa6;
+  --gold: #e8c97a;
+  --glow: rgba(255, 200, 221, 0.24);
+  --glow-strong: rgba(162, 232, 221, 0.22);
+  --glass-bg: rgba(42, 37, 64, 0.55);
+  --glass-border: rgba(255, 200, 221, 0.22);
+  --shadow-color: rgba(0, 0, 0, 0.32);
 }
 
 @theme inline {
@@ -58,7 +62,9 @@
   --color-muted: var(--muted);
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
+  --color-accent-fill: var(--accent-fill);
   --color-accent-2: var(--accent-2);
+  --color-accent-2-fill: var(--accent-2-fill);
   --color-on-accent: var(--on-accent);
   --color-danger: var(--danger);
   --color-gold: var(--gold);
@@ -68,7 +74,7 @@
   --color-glass-border: var(--glass-border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-jost);
+  --font-display: var(--font-plus-jakarta);
 }
 
 html {
@@ -93,14 +99,14 @@ body {
 /* ── Ambient background ──────────────────────────── */
 .grid-bg {
   background:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 84, 143, 0.07), transparent),
-    radial-gradient(ellipse 60% 40% at 85% 70%, rgba(139, 92, 246, 0.05), transparent);
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 200, 221, 0.14), transparent),
+    radial-gradient(ellipse 60% 40% at 85% 70%, rgba(162, 232, 221, 0.12), transparent);
 }
 
 .dark .grid-bg {
   background:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 107, 163, 0.09), transparent),
-    radial-gradient(ellipse 60% 40% at 85% 70%, rgba(185, 155, 255, 0.06), transparent);
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 179, 214, 0.14), transparent),
+    radial-gradient(ellipse 60% 40% at 85% 70%, rgba(143, 227, 214, 0.12), transparent);
 }
 
 /* ── Glass ───────────────────────────────────────── */
@@ -130,37 +136,37 @@ body {
 
 /* ── Glow ────────────────────────────────────────── */
 .glow-accent {
-  box-shadow: 0 0 20px var(--glow), 0 0 60px rgba(255, 84, 143, 0.05);
+  box-shadow: 0 0 28px var(--glow), 0 0 70px var(--glow-strong);
 }
 
 .dark .glow-accent {
-  box-shadow: 0 0 20px var(--glow), 0 0 60px rgba(255, 107, 163, 0.06);
+  box-shadow: 0 0 28px var(--glow), 0 0 70px var(--glow-strong);
 }
 
 .glow-accent-strong {
   box-shadow:
-    0 0 24px var(--glow-strong),
-    0 0 70px rgba(255, 84, 143, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    0 0 32px var(--glow-strong),
+    0 0 80px var(--glow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .dark .glow-accent-strong {
   box-shadow:
-    0 0 24px var(--glow-strong),
-    0 0 70px rgba(255, 107, 163, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 0 32px var(--glow-strong),
+    0 0 80px var(--glow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 /* ── Gradient text ───────────────────────────────── */
 .gradient-text {
-  background: linear-gradient(120deg, #ff548f 10%, #ff8ab0 45%, #8b5cf6 90%);
+  background: linear-gradient(120deg, #d98bb5 10%, #b98be0 52%, #4fb9a8 95%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .dark .gradient-text {
-  background: linear-gradient(120deg, #ff6ba3 10%, #ff9ec2 45%, #b99bff 90%);
+  background: linear-gradient(120deg, #ffb3d6 10%, #c9a8f0 52%, #8fe3d6 95%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -171,24 +177,32 @@ body {
   position: absolute;
   border-radius: 50%;
   filter: blur(80px);
-  opacity: 0.5;
+  opacity: 0.55;
   pointer-events: none;
 }
 
 .orb-accent {
-  background: radial-gradient(circle, rgba(255, 84, 143, 0.16), transparent 70%);
+  background: radial-gradient(circle, rgba(255, 200, 221, 0.35), transparent 70%);
 }
 
 .dark .orb-accent {
-  background: radial-gradient(circle, rgba(255, 107, 163, 0.18), transparent 70%);
+  background: radial-gradient(circle, rgba(255, 179, 214, 0.30), transparent 70%);
 }
 
 .orb-pink {
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.12), transparent 70%);
+  background: radial-gradient(circle, rgba(162, 232, 221, 0.30), transparent 70%);
 }
 
 .dark .orb-pink {
-  background: radial-gradient(circle, rgba(185, 155, 255, 0.14), transparent 70%);
+  background: radial-gradient(circle, rgba(143, 227, 214, 0.26), transparent 70%);
+}
+
+/* ── Soft pastel overrides ───────────────────────── */
+.bg-accent {
+  background-color: var(--accent-fill);
+}
+.bg-accent-2 {
+  background-color: var(--accent-2-fill);
 }
 
 /* ── Scrollbar ───────────────────────────────────── */
@@ -222,29 +236,31 @@ body {
   outline-offset: 2px;
 }
 
-/* ── Hard shadow system ──────────────────────────── */
+/* ── Soft shadow system (replaces hard neo-brutalism) ── */
 .hard-shadow {
-  box-shadow: 5px 5px 0 0 var(--shadow-color);
+  box-shadow: 0 10px 26px -10px var(--shadow-color);
 }
 
 .hard-shadow-sm {
-  box-shadow: 3px 3px 0 0 var(--shadow-color);
+  box-shadow: 0 5px 16px -8px var(--shadow-color);
 }
 
 .hard-shadow-hover {
-  box-shadow: 4px 4px 0 0 var(--shadow-color);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 8px 20px -10px var(--shadow-color);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
   will-change: transform;
 }
 
 .hard-shadow-hover:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 6px 6px 0 0 var(--shadow-color);
+  transform: translateY(-3px);
+  box-shadow:
+    0 16px 34px -12px var(--shadow-color),
+    0 0 24px var(--glow);
 }
 
 .hard-shadow-hover:active {
-  transform: translate(3px, 3px);
-  box-shadow: 0 0 0 0 var(--shadow-color);
+  transform: translateY(0);
+  box-shadow: 0 5px 14px -8px var(--shadow-color);
 }
 
 /* ── Marker highlighter ──────────────────────────── */
@@ -252,8 +268,8 @@ body {
   background-image: linear-gradient(
     transparent 0%,
     transparent 62%,
-    color-mix(in srgb, var(--accent) 30%, transparent) 62%,
-    color-mix(in srgb, var(--accent) 30%, transparent) 88%,
+    color-mix(in srgb, var(--accent) 28%, transparent) 62%,
+    color-mix(in srgb, var(--accent) 28%, transparent) 88%,
     transparent 88%
   );
 }
@@ -299,4 +315,15 @@ body {
 @keyframes float {
   0%, 100% { transform: translateY(0) rotate(0deg); }
   50% { transform: translateY(-8px) rotate(5deg); }
+}
+
+/* ── Equalizer (Now Playing) ────────────────────── */
+@keyframes eq {
+  0%, 100% { transform: scaleY(0.35); }
+  50% { transform: scaleY(1); }
+}
+
+.eq-bar {
+  animation: eq 1s ease-in-out infinite;
+  transform-origin: bottom;
 }

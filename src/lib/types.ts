@@ -87,11 +87,24 @@ export interface Project {
   link: string | null;
   published: boolean;
   featured: boolean;
+  sort_order: number;
   created_at: string;
   updated_at: string;
 }
 
 export type AchievementCategory = "competition" | "training" | "seminar";
+
+export interface NowPlayingSong {
+  id: string;
+  title: string;
+  artist: string;
+  album: string;
+  art_url: string;
+  link: string;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
 
 export interface Achievement {
   id: string;
@@ -132,6 +145,7 @@ export interface ProjectInsert {
   link?: string | null;
   published?: boolean;
   featured?: boolean;
+  sort_order?: number;
 }
 
 export interface ProjectMediaInsert {

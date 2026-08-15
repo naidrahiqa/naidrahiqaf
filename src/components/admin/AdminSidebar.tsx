@@ -9,6 +9,7 @@ import {
   LayoutList,
   Users,
   UserCircle,
+  Music,
   ExternalLink,
 } from "lucide-react";
 
@@ -16,6 +17,7 @@ const nav = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/projects", label: "Projects", icon: FolderGit2, exact: false },
   { href: "/admin/achievements", label: "Achievements", icon: Award, exact: false },
+  { href: "/admin/now-playing", label: "Now Playing", icon: Music, exact: false },
   { href: "/admin/about", label: "About", icon: LayoutList, exact: false },
   { href: "/admin/contacts", label: "Contacts", icon: Users, exact: false },
   { href: "/admin/profile", label: "Profile", icon: UserCircle, exact: false },

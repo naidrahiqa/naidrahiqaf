@@ -25,7 +25,7 @@ export default async function SchoolClassPage({
     .eq("published", true)
     .eq("category", "school")
     .eq("class_level", cls)
-    .order("created_at", { ascending: false });
+    .order("sort_order", { ascending: true });
 
   const items = (data ?? []) as Project[];
   if (items.length === 0) notFound();

@@ -3,14 +3,15 @@ import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/admin";
 import { slugify, detectVideoType, getStoragePath } from "@/lib/utils";
 import { dbError } from "@/lib/api";
-import { pickFields, projectFields, achievementFields } from "@/lib/admin-fields";
+import { pickFields, projectFields, achievementFields, nowPlayingFields } from "@/lib/admin-fields";
 
-const entities = ["projects", "achievements"] as const;
+const entities = ["projects", "achievements", "now_playing"] as const;
 type Entity = (typeof entities)[number];
 
 const allowedFields: Record<Entity, readonly string[]> = {
   projects: projectFields,
   achievements: achievementFields,
+  now_playing: nowPlayingFields,
 };
 
 export async function GET(
@@ -52,7 +53,7 @@ export async function PUT(
   const payload = pickFields(body, allowedFields[entity as Entity]);
   delete payload.created_at;
   payload.updated_at = new Date().toISOString();
-  if (entity !== "achievements") {
+  if (entity === "projects") {
     if (payload.title) payload.slug = payload.slug ?? slugify(String(payload.title));
     if (payload.video_url !== undefined)
       payload.video_type = payload.video_type ?? detectVideoType(String(payload.video_url ?? null));

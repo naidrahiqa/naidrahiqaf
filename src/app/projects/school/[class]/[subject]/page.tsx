@@ -19,7 +19,7 @@ export default async function SchoolSubjectPage({
     .eq("published", true)
     .eq("category", "school")
     .eq("class_level", cls)
-    .order("created_at", { ascending: false });
+    .order("sort_order", { ascending: true });
 
   const items = ((data ?? []) as Project[]).filter(
     (p) =>

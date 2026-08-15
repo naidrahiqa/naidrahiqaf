@@ -9,7 +9,7 @@ export function DeleteButton({
   id,
   name,
 }: {
-  entity: "posts" | "projects" | "achievements";
+  entity: "posts" | "projects" | "achievements" | "now_playing";
   id: string;
   name?: string;
 }) {

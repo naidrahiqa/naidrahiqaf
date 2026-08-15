@@ -2,43 +2,60 @@ import Link from "next/link";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { ProjectCard, AchievementBadge } from "@/components/cards";
+import { NowPlaying } from "@/components/NowPlaying";
 import { MarkdownContent } from "@/components/MarkdownContent";
 import { PDFThumbnail } from "@/components/PDFThumbnail";
+import type { NowPlayingSong } from "@/lib/types";
+
+function pickTodaysSong(rows: NowPlayingSong[]): NowPlayingSong | null {
+  if (rows.length === 0) return null;
+  return rows[Math.floor(Date.now() / 86400000) % rows.length];
+}
 
 export default async function HomePage() {
   const supabase = await createClient();
 
-  const [{ data: profile }, { data: projects }, { data: achievements }, { data: aboutSections }] =
-    await Promise.all([
-      supabase.from("profiles").select("*").eq("id", 1).single(),
-      supabase
-        .from("projects")
-        .select("*")
-        .eq("published", true)
-        .eq("featured", true)
-        .order("created_at", { ascending: false })
-        .limit(6),
-      supabase
-        .from("achievements")
-        .select("*")
-        .order("sort_order")
-        .limit(4),
-      supabase
-        .from("about_sections")
-        .select("*")
-        .order("sort_order")
-        .limit(3),
-    ]);
+  const [
+    { data: profile },
+    { data: projects },
+    { data: achievements },
+    { data: aboutSections },
+    { data: nowPlaying },
+  ] = await Promise.all([
+    supabase.from("profiles").select("*").eq("id", 1).single(),
+    supabase
+      .from("projects")
+      .select("*")
+      .eq("published", true)
+      .eq("featured", true)
+      .order("sort_order", { ascending: true })
+      .limit(6),
+    supabase
+      .from("achievements")
+      .select("*")
+      .order("sort_order")
+      .limit(4),
+    supabase
+      .from("about_sections")
+      .select("*")
+      .order("sort_order")
+      .limit(3),
+    supabase.from("now_playing").select("*").order("sort_order"),
+  ]);
+
+  const nowPlayingRows = (Array.isArray(nowPlaying) ? nowPlaying : []) as NowPlayingSong[];
+  const todaysSong = pickTodaysSong(nowPlayingRows);
 
   return (
     <div className="flex flex-col pt-14 sm:pt-20">
       {/* HERO */}
-      <section className="relative flex flex-col gap-10 px-5 sm:px-8">
+      <section className="relative flex flex-col gap-10 px-5 sm:px-8 lg:grid lg:grid-cols-2 lg:items-center lg:gap-12">
         <div className="orb orb-accent -top-40 -left-40 h-80 w-80" />
         <div className="orb orb-pink top-20 -right-20 h-60 w-60" />
 
-        {/* Sticker chips — rotated, chunky */}
-        <div className="relative z-10 flex flex-wrap items-center gap-3">
+        <div className="relative z-10 flex flex-col gap-8">
+          {/* Sticker chips — rotated, chunky */}
+          <div className="flex flex-wrap items-center gap-3">
           <span className="font-display rounded-full border-2 border-accent bg-accent px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-on-accent hard-shadow-sm -rotate-3">
             TKJ Student
           </span>
@@ -81,7 +98,9 @@ export default async function HomePage() {
             </Link>
           </div>
         </div>
+        </div>
 
+        <NowPlaying song={todaysSong} />
       </section>
 
       {/* ABOUT */}
