@@ -10,6 +10,7 @@ import {
 } from "@/components/admin/ui";
 import { useToast } from "@/components/admin/Toast";
 import { DeleteButton } from "@/components/admin/DeleteButton";
+import { FileUpload } from "@/components/admin/FileUpload";
 
 export default function NowPlayingAdminPage() {
   const { toast } = useToast();
@@ -124,7 +125,9 @@ export default function NowPlayingAdminPage() {
         <p className="mt-2 text-sm text-muted">
           Lagu yang tampil di card home — rotasi otomatis tiap hari. Urutan
           diambil dari kolom sort (1, 2, 3…). Tiap lagu bisa pakai link bebas
-          (Spotify / YouTube / url apa aja) & gambar dari URL mana aja.
+          (Spotify / YouTube / url apa aja). Untuk cover, upload ke Supabase
+          (paling reliable) atau paste URL — URL dari situs yang blokir
+          hotlink (mis. kpopping) tidak akan tampil.
         </p>
       </header>
 
@@ -193,13 +196,12 @@ export default function NowPlayingAdminPage() {
                   onChange={(e) => update(s.id, { album: e.target.value })}
                 />
               </div>
-              <div>
-                <Label htmlFor={`art-${s.id}`}>Art URL</Label>
-                <Input
-                  id={`art-${s.id}`}
-                  value={s.art_url}
-                  onChange={(e) => update(s.id, { art_url: e.target.value })}
-                  placeholder="https://…/cover.jpg"
+              <div className="sm:col-span-2">
+                <FileUpload
+                  label="Art URL (upload ke Supabase atau paste URL)"
+                  value={s.art_url || ""}
+                  onChange={(v) => update(s.id, { art_url: v ?? "" })}
+                  accept="image/*"
                 />
               </div>
               <div className="sm:col-span-2">
