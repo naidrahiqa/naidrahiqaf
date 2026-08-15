@@ -176,9 +176,17 @@ body {
 .orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.55;
+  filter: blur(48px);
+  opacity: 0.5;
   pointer-events: none;
+  transform: translateZ(0);
+}
+
+@media (min-width: 768px) {
+  .orb {
+    filter: blur(80px);
+    opacity: 0.55;
+  }
 }
 
 .orb-accent {

@@ -32,8 +32,8 @@ export function NowPlaying({ song }: { song?: SongInput | null }) {
 
   return (
     <div className="glass glow-accent-strong relative overflow-hidden rounded-3xl p-5">
-      <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-accent-fill/40 blur-2xl" />
-      <div className="pointer-events-none absolute -bottom-12 -left-8 h-28 w-28 rounded-full bg-accent-2-fill/40 blur-2xl" />
+      <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-accent-fill/40 blur-xl sm:blur-2xl" />
+      <div className="pointer-events-none absolute -bottom-12 -left-8 h-28 w-28 rounded-full bg-accent-2-fill/40 blur-xl sm:blur-2xl" />
 
       <div className="relative flex items-center justify-between">
         <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-accent">

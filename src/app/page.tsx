@@ -49,7 +49,7 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col pt-14 sm:pt-20">
       {/* HERO */}
-      <section className="relative flex flex-col gap-10 px-5 sm:px-8 lg:grid lg:grid-cols-2 lg:items-center lg:gap-12">
+      <section className="relative flex flex-col gap-10 overflow-hidden px-5 sm:px-8 lg:grid lg:grid-cols-2 lg:items-center lg:gap-12">
         <div className="orb orb-accent -top-40 -left-40 h-80 w-80" />
         <div className="orb orb-pink top-20 -right-20 h-60 w-60" />
 

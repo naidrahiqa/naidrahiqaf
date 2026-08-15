@@ -15,7 +15,7 @@ export function ProjectCard({ project }: { project: Project }) {
   return (
     <Link
       href={`/projects/${project.slug}`}
-      className="group block overflow-hidden rounded-xl border-2 border-foreground bg-surface hard-shadow-sm transition-all duration-200 hover:-translate-y-1 hover:hard-shadow-hover"
+      className="group block overflow-hidden rounded-xl border-2 border-foreground bg-surface hard-shadow-sm transition-all duration-200 hover:-translate-y-1 hover:hard-shadow-hover active:-translate-y-0.5 active:hard-shadow-hover"
     >
       {imgSrc ? (
         <div className="aspect-video overflow-hidden border-b-2 border-foreground bg-surface-2">
@@ -75,7 +75,7 @@ export function ClassCard({
   return (
     <Link
       href={`/projects/school/${cls}`}
-      className="group relative block overflow-hidden rounded-2xl border-2 border-foreground bg-surface p-6 hard-shadow transition-all duration-200 hover:-translate-y-1 hover:hard-shadow-hover"
+      className="group relative block overflow-hidden rounded-2xl border-2 border-foreground bg-surface p-6 hard-shadow transition-all duration-200 hover:-translate-y-1 hover:hard-shadow-hover active:-translate-y-1 active:hard-shadow-hover"
     >
       <div className="pointer-events-none absolute right-4 top-2 select-none font-display text-[64px] font-black uppercase leading-none text-accent/10 transition-colors group-hover:text-accent/20">
         {cls}
@@ -126,7 +126,7 @@ export function SubjectRow({
   return (
     <Link
       href={`/projects/school/${cls}/${slug}`}
-      className="group flex items-center justify-between rounded-xl border-2 border-foreground bg-surface px-5 py-4 hard-shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:hard-shadow-hover"
+      className="group flex items-center justify-between rounded-xl border-2 border-foreground bg-surface px-5 py-4 hard-shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:hard-shadow-hover active:-translate-y-0.5 active:hard-shadow-hover"
     >
       <div>
         <h3 className="font-display font-bold uppercase tracking-tight transition-colors group-hover:text-accent">

@@ -141,7 +141,7 @@ export function AchievementFilter({ items }: { items: Achievement[] }) {
         {filtered.map((a, i) => (
           <div
             key={a.id}
-            className="flex flex-col gap-3 rounded-xl border-2 border-foreground bg-surface hard-shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:hard-shadow-hover"
+            className="flex flex-col gap-3 rounded-xl border-2 border-foreground bg-surface hard-shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:hard-shadow-hover active:-translate-y-0.5 active:hard-shadow-hover"
           >
             {renderThumbnail(a)}
             <div className="p-5">
