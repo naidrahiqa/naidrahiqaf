@@ -4,6 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import { CLASS_LEVELS, cn } from "@/lib/utils";
 import { ProjectReorderList } from "./ProjectReorderList";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminProjectsPage({
   searchParams,
 }: {
