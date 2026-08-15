@@ -17,45 +17,61 @@ export default async function AboutPage() {
   ]);
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-14 pt-12 sm:pt-16">
-      <header>
-        <p className="text-xs uppercase tracking-widest text-accent">
-          About Me
-        </p>
-        <h1 className="mt-2 font-display text-3xl font-bold uppercase tracking-tight sm:text-4xl">
-          Who is <span className="gradient-text">Naidra</span>?
-        </h1>
-      </header>
+    <div className="relative">
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute -left-24 top-0 h-72 w-72 rounded-full bg-accent-fill/30 blur-3xl" />
+        <div className="absolute -right-20 top-40 h-80 w-80 rounded-full bg-accent-2-fill/30 blur-3xl" />
+      </div>
 
-      {profile && (
-        <div className="glass glow-accent flex items-center gap-5 rounded-2xl p-5">
-          {profile.profile_image ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={resolveImageUrl(profile.profile_image)}
-              alt={profile.name}
-              className="h-16 w-16 rounded-full object-cover ring-2 ring-accent/20 ring-offset-2 ring-offset-background"
-            />
-          ) : (
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-accent/20 to-accent-2/20 text-xl font-bold text-accent ring-2 ring-accent/20 ring-offset-2 ring-offset-background">
-              {profile.nickname?.charAt(0) ?? "N"}
+      <div className="mx-auto flex max-w-3xl flex-col gap-12 pt-12 sm:pt-16">
+        <header className="flex flex-col gap-6">
+          <p className="text-xs uppercase tracking-[0.3em] text-accent">
+            About Me
+          </p>
+          <h1 className="font-display text-4xl font-bold uppercase tracking-tight sm:text-5xl">
+            Who is <span className="gradient-text">Naidra</span>?
+          </h1>
+
+          {profile && (
+            <div className="glass glow-accent flex flex-col items-center gap-5 rounded-3xl p-6 sm:flex-row sm:items-center sm:gap-6">
+              {profile.profile_image ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={resolveImageUrl(profile.profile_image)}
+                  alt={profile.name}
+                  className="h-28 w-28 shrink-0 rounded-2xl object-cover ring-2 ring-accent/30 ring-offset-2 ring-offset-background"
+                />
+              ) : (
+                <div className="flex h-28 w-28 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-accent/20 to-accent-2/20 text-3xl font-bold text-accent ring-2 ring-accent/30 ring-offset-2 ring-offset-background">
+                  {profile.nickname?.charAt(0) ?? "N"}
+                </div>
+              )}
+              <div className="min-w-0 text-center sm:text-left">
+                <h2 className="font-display text-2xl font-bold">
+                  {profile.name}
+                </h2>
+                <p className="mt-1 text-muted">{profile.tagline}</p>
+              </div>
             </div>
           )}
-          <div className="min-w-0">
-            <h2 className="text-lg font-semibold">{profile.name}</h2>
-            <p className="text-sm text-muted">{profile.tagline}</p>
-          </div>
-        </div>
-      )}
+        </header>
 
-      {sections?.map((section) => (
-        <section key={section.id}>
-          <h2 className="text-lg font-semibold">{section.heading}</h2>
-          <div className="mt-3">
-            <MarkdownContent content={section.content} />
-          </div>
-        </section>
-      ))}
+        <div className="flex flex-col gap-6">
+          {sections?.map((section) => (
+            <section
+              key={section.id}
+              className="glass rounded-2xl p-6 transition-colors hover:border-accent/30"
+            >
+              <h2 className="font-display text-xl font-bold tracking-tight">
+                {section.heading}
+              </h2>
+              <div className="mt-3">
+                <MarkdownContent content={section.content} />
+              </div>
+            </section>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

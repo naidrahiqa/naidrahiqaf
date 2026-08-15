@@ -77,7 +77,7 @@ export function ClassCard({
       href={`/projects/school/${cls}`}
       className="group relative block overflow-hidden rounded-2xl border-2 border-foreground bg-surface p-6 hard-shadow transition-all duration-200 hover:-translate-y-1 hover:hard-shadow-hover"
     >
-      <div className="absolute -top-4 -right-4 font-display text-[90px] font-black uppercase leading-none tracking-tighter text-accent/10 transition-colors group-hover:text-accent/20">
+      <div className="pointer-events-none absolute right-4 top-2 select-none font-display text-[64px] font-black uppercase leading-none text-accent/10 transition-colors group-hover:text-accent/20">
         {cls}
       </div>
       <div className="relative z-10">
