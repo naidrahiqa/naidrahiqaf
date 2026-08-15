@@ -20,8 +20,8 @@
   --on-accent: #4a3e56;
   --danger: #e06a78;
   --gold: #c9a24b;
-  --glow: rgba(255, 200, 221, 0.45);
-  --glow-strong: rgba(162, 232, 221, 0.38);
+  --glow: rgba(255, 200, 221, 0.28);
+  --glow-strong: rgba(162, 232, 221, 0.20);
   --glass-bg: rgba(255, 255, 255, 0.55);
   --glass-border: rgba(255, 200, 221, 0.45);
   --shadow-color: rgba(74, 62, 86, 0.14);
@@ -44,8 +44,8 @@
   --on-accent: #4a3e56;
   --danger: #ff9aa6;
   --gold: #e8c97a;
-  --glow: rgba(255, 200, 221, 0.24);
-  --glow-strong: rgba(162, 232, 221, 0.22);
+  --glow: rgba(255, 200, 221, 0.15);
+  --glow-strong: rgba(162, 232, 221, 0.12);
   --glass-bg: rgba(42, 37, 64, 0.55);
   --glass-border: rgba(255, 200, 221, 0.22);
   --shadow-color: rgba(0, 0, 0, 0.32);
@@ -176,16 +176,16 @@ body {
 .orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(48px);
-  opacity: 0.5;
+  filter: blur(40px);
+  opacity: 0.32;
   pointer-events: none;
   transform: translateZ(0);
 }
 
 @media (min-width: 768px) {
   .orb {
-    filter: blur(80px);
-    opacity: 0.55;
+    filter: blur(64px);
+    opacity: 0.42;
   }
 }
 

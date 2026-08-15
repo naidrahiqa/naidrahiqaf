@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { Music } from "lucide-react";
 import { resolveImageUrl } from "@/lib/utils";
 import type { NowPlayingSong } from "@/lib/types";
@@ -24,16 +27,17 @@ function pickSong(list: SongInput[]): SongInput {
 
 export function NowPlaying({ song }: { song?: SongInput | null }) {
   const data = song ?? pickSong(FALLBACK);
-  const art = data.art_url ? resolveImageUrl(data.art_url) : null;
+  const [artError, setArtError] = useState(false);
+  const art = data.art_url && !artError ? resolveImageUrl(data.art_url) : null;
   const date = new Date().toLocaleDateString("en-GB", {
     day: "numeric",
     month: "short",
   });
 
   return (
-    <div className="glass glow-accent-strong relative overflow-hidden rounded-3xl p-5">
-      <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-accent-fill/40 blur-xl sm:blur-2xl" />
-      <div className="pointer-events-none absolute -bottom-12 -left-8 h-28 w-28 rounded-full bg-accent-2-fill/40 blur-xl sm:blur-2xl" />
+    <div className="glass glow-accent relative overflow-hidden rounded-3xl p-5">
+      <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-accent-fill/25 blur-xl sm:blur-2xl" />
+      <div className="pointer-events-none absolute -bottom-12 -left-8 h-28 w-28 rounded-full bg-accent-2-fill/25 blur-xl sm:blur-2xl" />
 
       <div className="relative flex items-center justify-between">
         <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-accent">
@@ -76,6 +80,7 @@ export function NowPlaying({ song }: { song?: SongInput | null }) {
             <img
               src={art}
               alt={data.title}
+              onError={() => setArtError(true)}
               className="h-full w-full object-cover"
             />
           ) : (

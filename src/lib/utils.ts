@@ -55,6 +55,13 @@ export function storagePublicUrl(path: string): string {
 export function resolveImageUrl(url: string | null | undefined): string {
   if (!url) return "";
   if (url.startsWith("http")) {
+    // Unwrap Next.js image proxy (e.g. kpopping.com/_next/image?url=<real>)
+    if (url.includes("/_next/image")) {
+      try {
+        const inner = new URL(url).searchParams.get("url");
+        if (inner) return inner;
+      } catch {}
+    }
     const driveId = getDriveId(url);
     if (driveId && (url.includes("drive.google.com") || url.includes("docs.google.com")))
       return `https://lh3.googleusercontent.com/d/${driveId}=s0`;
