@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef } from "react";
+import Image from "next/image";
 import { X, ExternalLink } from "lucide-react";
 
 interface LightboxProps {
@@ -44,11 +45,13 @@ export function ImageLightbox({ src, alt, href, onClose }: LightboxProps) {
       </button>
 
       <div className="relative flex max-h-[85vh] max-w-[90vw] flex-col items-center gap-3">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={src}
           alt={alt}
-          className="max-h-[80vh] max-w-full rounded-lg object-contain"
+          width={1920}
+          height={1080}
+          className="max-h-[80vh] w-auto max-w-full rounded-lg object-contain"
+          unoptimized
         />
         {href && (
           <a

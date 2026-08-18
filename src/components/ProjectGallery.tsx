@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { ExternalLink, FileText, ImageOff } from "lucide-react";
-import { resolveImageUrl } from "@/lib/utils";
+import { resolveImageUrl, getSourceHref } from "@/lib/utils";
 import { VideoEmbed } from "@/components/VideoEmbed";
 import { ImageLightbox } from "@/components/ImageLightbox";
 import type { ProjectMedia } from "@/lib/types";
@@ -10,15 +11,6 @@ import type { ProjectMedia } from "@/lib/types";
 function resolveMediaUrl(media: ProjectMedia): string {
   if (media.media_type === "image") return resolveImageUrl(media.url);
   return media.url;
-}
-
-function getSourceHref(url: string): string {
-  if (url.includes("drive.google.com") || url.includes("docs.google.com")) return url;
-  if (url.startsWith("media/")) {
-    const base = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-    return `${base}/storage/v1/object/public/media/${url.replace(/^media\//, "")}`;
-  }
-  return url;
 }
 
 function isEmbeddableVideo(media: ProjectMedia): boolean {
@@ -119,14 +111,14 @@ function GalleryImage({
         onClick={() => onOpenLightbox(src, img.caption || "project photo", href)}
         className="block w-full text-left"
       >
-        <div className="aspect-video overflow-hidden bg-surface-2">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+        <div className="relative aspect-video overflow-hidden bg-surface-2">
+          <Image
             src={src}
             alt={img.caption || "project photo"}
-            loading="lazy"
+            fill
+            sizes="(max-width: 640px) 100vw, 50vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
             onError={() => setError(true)}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </div>
       </button>

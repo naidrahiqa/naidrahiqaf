@@ -7,6 +7,10 @@ import { CLASS_LEVELS, slugify } from "@/lib/utils";
 import { SubjectRow } from "@/components/cards";
 import type { Project } from "@/lib/types";
 
+export async function generateStaticParams() {
+  return CLASS_LEVELS.map((cls) => ({ class: cls }));
+}
+
 export const metadata: Metadata = {
   title: "School Projects",
   description: "School projects per class — Naidrahiqa",

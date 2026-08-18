@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Music } from "lucide-react";
 import { resolveImageUrl } from "@/lib/utils";
 import type { NowPlayingSong } from "@/lib/types";
@@ -76,12 +77,13 @@ export function NowPlaying({ song }: { song?: SongInput | null }) {
       <div className="relative mt-4 flex gap-4">
         <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl border border-glass-border bg-surface-2">
           {art ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={art}
               alt={data.title}
-              onError={() => setArtError(true)}
+              width={96}
+              height={96}
               className="h-full w-full object-cover"
+              onError={() => setArtError(true)}
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-accent-fill to-accent-2-fill">

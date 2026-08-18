@@ -43,3 +43,5 @@ export default async function Footer() {
     </footer>
   );
 }
+
+export const revalidate = 3600;

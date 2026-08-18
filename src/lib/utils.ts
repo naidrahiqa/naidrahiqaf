@@ -71,6 +71,12 @@ export function resolveImageUrl(url: string | null | undefined): string {
   return storagePublicUrl(url);
 }
 
+export function getSourceHref(url: string): string {
+  if (url.includes("drive.google.com") || url.includes("docs.google.com")) return url;
+  if (url.startsWith("media/")) return storagePublicUrl(url);
+  return url;
+}
+
 export function detectVideoType(
   url: string | null | undefined
 ): "none" | "youtube" | "drive" | "storage" {

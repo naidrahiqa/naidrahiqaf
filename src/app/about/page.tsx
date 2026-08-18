@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { resolveImageUrl } from "@/lib/utils";
 import { MarkdownContent } from "@/components/MarkdownContent";
@@ -35,10 +36,11 @@ export default async function AboutPage() {
           {profile && (
             <div className="glass glow-accent flex flex-col items-center gap-5 rounded-3xl p-6 sm:flex-row sm:items-center sm:gap-6">
               {profile.profile_image ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Image
                   src={resolveImageUrl(profile.profile_image)}
                   alt={profile.name}
+                  width={112}
+                  height={112}
                   className="h-28 w-28 shrink-0 rounded-2xl object-cover ring-2 ring-accent/30 ring-offset-2 ring-offset-background"
                 />
               ) : (
@@ -75,3 +77,5 @@ export default async function AboutPage() {
     </div>
   );
 }
+
+export const revalidate = 3600;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   DndContext,
@@ -146,6 +146,10 @@ export function ProjectReorderList({ items }: { items: Project[] }) {
   const [ordered, setOrdered] = useState<Project[]>(items);
   const [saving, setSaving] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    setOrdered(items);
+  }, [items]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),

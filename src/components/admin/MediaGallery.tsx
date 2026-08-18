@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { ArrowDown, ArrowUp, ImagePlus, Plus, Trash2, Play, FileText } from "lucide-react";
 import type { ProjectMediaType } from "@/lib/types";
 import { cn, resolveImageUrl, detectVideoType } from "@/lib/utils";
@@ -39,9 +40,11 @@ function VideoPreview({ url, type }: { url: string; type: string }) {
     if (!id) return null;
     return (
       <div className="mt-3 overflow-hidden rounded-lg border border-border bg-background">
-        <img
+        <Image
           src={`https://img.youtube.com/vi/${id}/mqdefault.jpg`}
           alt="YouTube preview"
+          width={320}
+          height={180}
           className="w-full object-cover"
         />
       </div>
@@ -53,9 +56,11 @@ function VideoPreview({ url, type }: { url: string; type: string }) {
     if (!id) return null;
     return (
       <div className="mt-3 overflow-hidden rounded-lg border border-border bg-background">
-        <img
+        <Image
           src={`https://lh3.googleusercontent.com/d/${id}=w400`}
           alt="Drive preview"
+          width={400}
+          height={300}
           className="w-full object-cover"
           onError={(e) => {
             (e.target as HTMLImageElement).style.display = "none";
@@ -250,10 +255,11 @@ export function MediaGallery({
             {/* Image preview */}
             {item.media_type === "image" && item.url && (
               <div className="mt-3 overflow-hidden rounded-lg border border-border bg-background">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={resolveImageUrl(item.url)}
                   alt="preview"
+                  width={800}
+                  height={400}
                   className={cn("max-h-40 w-full object-contain")}
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = "none";

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { cn, getStoragePath, storagePublicUrl } from "@/lib/utils";
 import type { Project, Achievement } from "@/lib/types";
@@ -18,13 +19,13 @@ export function ProjectCard({ project }: { project: Project }) {
       className="group block overflow-hidden rounded-xl border-2 border-foreground bg-surface hard-shadow-sm transition-all duration-200 hover:-translate-y-1 hover:hard-shadow-hover active:-translate-y-0.5 active:hard-shadow-hover"
     >
       {imgSrc ? (
-        <div className="aspect-video overflow-hidden border-b-2 border-foreground bg-surface-2">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+        <div className="relative aspect-video overflow-hidden border-b-2 border-foreground bg-surface-2">
+          <Image
             src={imgSrc}
             alt={project.title}
-            loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         </div>
       ) : (

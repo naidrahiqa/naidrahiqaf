@@ -1,22 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { ExternalLink } from "lucide-react";
-import { resolveImageUrl } from "@/lib/utils";
+import { resolveImageUrl, getSourceHref } from "@/lib/utils";
 import { MarkdownContent } from "@/components/MarkdownContent";
 import { VideoEmbed } from "@/components/VideoEmbed";
 import { ProjectGallery } from "@/components/ProjectGallery";
 import { ImageLightbox } from "@/components/ImageLightbox";
 import type { Project, ProjectMedia } from "@/lib/types";
-
-function getSourceHref(url: string): string {
-  if (url.includes("drive.google.com") || url.includes("docs.google.com")) return url;
-  if (url.startsWith("media/")) {
-    const base = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-    return `${base}/storage/v1/object/public/media/${url.replace(/^media\//, "")}`;
-  }
-  return url;
-}
 
 function MasonryGallery({ media }: { media: ProjectMedia[] }) {
   const images = media.filter((m) => m.media_type === "image");
@@ -46,13 +38,15 @@ function MasonryGallery({ media }: { media: ProjectMedia[] }) {
                   onClick={() => setLightbox({ src, alt: img.caption || "project photo", href })}
                   className="block w-full text-left"
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={src}
-                    alt={img.caption || "project photo"}
-                    loading="lazy"
-                    className="w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
+                  <div className="relative w-full">
+                    <Image
+                      src={src}
+                      alt={img.caption || "project photo"}
+                      width={800}
+                      height={600}
+                      className="w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
                 </button>
                 <div className="flex items-center justify-between px-3 py-2">
                   {img.caption && (
@@ -148,12 +142,15 @@ export function ProjectLayout({
                 onClick={() => setCoverLightbox(true)}
                 className="block w-full text-left"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={cover}
-                  alt={project.title}
-                  className="aspect-[16/9] w-full object-cover"
-                />
+                <div className="relative aspect-[16/9] w-full">
+                  <Image
+                    src={cover}
+                    alt={project.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 768px"
+                    className="object-cover"
+                  />
+                </div>
               </button>
             </div>
           )}

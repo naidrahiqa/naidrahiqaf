@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Award, ExternalLink, FileText } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, storagePublicUrl } from "@/lib/utils";
 import { AchievementBadge } from "@/components/cards";
 import { PDFThumbnail } from "@/components/PDFThumbnail";
 import type { Achievement } from "@/lib/types";
@@ -46,11 +47,6 @@ function getViewUrl(certificateUrl: string, directUrl: string): string {
   return directUrl;
 }
 
-function getSupabaseUrl(path: string): string {
-  const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  return `${base}/storage/v1/object/public/media/${path.replace(/^media\//, "")}`;
-}
-
 export function AchievementFilter({ items }: { items: Achievement[] }) {
   const [active, setActive] = useState<FilterKey>("all");
 
@@ -61,7 +57,7 @@ export function AchievementFilter({ items }: { items: Achievement[] }) {
     if (!a.certificate_url) return null;
     
     const viewUrl = isLocalPath(a.certificate_url) 
-      ? getSupabaseUrl(a.certificate_url) 
+      ? storagePublicUrl(a.certificate_url) 
       : a.certificate_url;
     const directUrl = toDirectUrl(viewUrl);
 
@@ -86,10 +82,11 @@ export function AchievementFilter({ items }: { items: Achievement[] }) {
           rel="noopener noreferrer"
           className="block aspect-[3/2] overflow-hidden border-b-2 border-foreground bg-surface-2"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={directUrl}
             alt={a.title}
+            width={600}
+            height={400}
             className="h-full w-full object-cover"
           />
         </a>
@@ -167,7 +164,7 @@ export function AchievementFilter({ items }: { items: Achievement[] }) {
               )}
               {a.certificate_url && (
                 <a
-                  href={getViewUrl(a.certificate_url, isLocalPath(a.certificate_url) ? getSupabaseUrl(a.certificate_url) : a.certificate_url)}
+                  href={getViewUrl(a.certificate_url, isLocalPath(a.certificate_url) ? storagePublicUrl(a.certificate_url) : a.certificate_url)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-1 inline-flex w-fit items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-accent transition-colors hover:underline"

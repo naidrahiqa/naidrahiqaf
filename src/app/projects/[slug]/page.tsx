@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -125,12 +126,14 @@ export default async function ProjectDetailPage({
 
       {/* Cover image */}
       {cover && (
-        <div className="overflow-hidden rounded-2xl border-2 border-foreground bg-surface hard-shadow-sm">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+        <div className="relative overflow-hidden rounded-2xl border-2 border-foreground bg-surface hard-shadow-sm">
+          <Image
             src={cover}
             alt={project.title}
+            width={1200}
+            height={675}
             className="w-full object-cover"
+            priority
           />
         </div>
       )}
